@@ -26,7 +26,7 @@ export const userAuth = defineStore('userAuth', {
             const router = useRouter();
             const {$UserPublicAxios} = useNuxtApp(); // Use full Nuxt app instance
             try{
-                const response = await $UserPublicAxios.post('/telegram-register', {username, telegram_id, profile_picture});
+                const response = await $UserPublicAxios.post('/telegram/verify', {username, telegram_id, profile_picture});
                 console.log("Login Response:", response.data);
                 if (response.status !== 200) {
                     throw new Error(`Error: Received status code ${response.status}`);
