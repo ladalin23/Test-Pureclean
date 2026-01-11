@@ -43,7 +43,7 @@ export default defineNuxtConfig({
 
     // Public (exposed to client)
     public: {
-      telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME,
+      telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME || "testpurecleanbot",
       telegramBotReturnUrl: process.env.TELEGRAM_BOT_RETURN_URL,
       adminPublicApi: process.env.ADMIN_PUBLIC_API,
       adminPublicApiDev: process.env.ADMIN_PUBLIC_API_DEV,
