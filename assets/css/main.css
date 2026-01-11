@@ -1,0 +1,293 @@
+@import "sweetalert2/dist/sweetalert2.min.css";
+/* @import "sweetalert2/src/sweetalert2"; */
+
+.swal2-confirm {
+  background-color: #7066e0 !important;
+  color: #fff !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.swal2-cancel {
+  background-color: #aaa !important;
+  color: #fff !important;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+
+/* Global font classes */
+.bold {
+  font-weight: bold;
+}
+
+.fw-100 {
+  font-weight: 100;
+}
+.fw-200 {
+  font-weight: 200;
+}
+.fw-300 {
+  font-weight: 300;
+}
+.fw-400 {
+  font-weight: 400;
+}
+.fw-500 {
+  font-weight: 500;
+}
+.fw-600 {
+  font-weight: 600;
+}
+.fw-700 {
+  font-weight: 700;
+}
+
+
+.fw-100 {
+  font-weight: 100;
+}
+
+.fw-200 {
+  font-weight: 200;
+}
+
+.fw-300 {
+  font-weight: 300;
+}
+
+.fw-400 {
+  font-weight: 400;
+}
+
+.fw-500 {
+  font-weight: 500;
+}
+
+.fw-600 {
+  font-weight: 600;
+}
+
+.fw-700 {
+  font-weight: 700;
+}
+
+
+.fw-800 {
+  font-weight: 800;
+}
+
+.italic {
+  font-style: italic;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+.strike {
+  text-decoration: line-through;
+}
+
+.uppercase {
+  text-transform: uppercase;
+}
+
+.lowercase {
+  text-transform: lowercase;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+
+/* Global text classes */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-justify {
+  text-align: justify;
+}
+
+/* Global color classes */
+.text-primary {
+  color: #007bff;
+}
+
+.text-secondary {
+  color: #6c757d;
+}
+
+.text-success {
+  color: #28a745;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+.text-warning {
+  color: #ffc107;
+}
+
+/* Global background color Class */
+.bg-primary {
+
+  background-color: #20334f;
+
+  background-color: #007bff;
+
+  color: #fff;
+}
+
+.bg-secondary {
+
+  background-color: #6c757d;
+
+  background-color: #20334F;
+
+  color: #fff;
+}
+
+.bg-success {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.bg-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+/* =============================================================
+  Global font classes are used to change the font of the text.
+================================================================*/
+@font-face {
+  font-family: "EnglishFont";
+  src: url("/fonts/HelveticaNowText-Regular.ttf") format("truetype");
+  /* src: url("/fonts/helveticanowtext-bold-demo.ttf") format("truetype"); */
+}
+
+/* @font-face {
+  font-family: "KhmerFont";
+  src: url("/fonts/Taprom.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "VietnameseFont";
+  src: url("/fonts/NotoSansMono-VariableFont_wdth,wght.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "ChineseFont";
+  src: url("/fonts/NotoSansSC-VariableFont_wght.ttf") format("truetype");
+} */
+
+/*==================================== 
+  Title Styles 
+====================================*/
+.text-h1 {
+  font-size: 48px;
+}
+
+.text-h2 {
+  font-size: 40px;
+}
+
+.text-h3 {
+  font-size: 32px;
+}
+
+.text-h4 {
+  font-size: 28px;
+}
+
+.text-h5 {
+  font-size: 24px;
+}
+
+.text-h6 {
+  font-size: 20px;
+}
+
+.text-h7 {
+  font-size: 16px;
+}
+
+/*==================================== 
+  Body Text Styles
+====================================*/
+.text-small {
+  font-size: 12px;
+}
+
+.text-normal {
+  font-size: 14px;
+}
+
+.text-large {
+  font-size: 16px;
+}
+
+.text-xlarge {
+  font-size: 18px;
+}
+
+.text-xxlarge {
+  font-size: 20px;
+}
+
+.text-xxxlarge {
+  font-size: 24px;
+}
+
+.text-xxxxlarge {
+  font-size: 28px;
+}
+
+.text-xxxxxlarge {
+  font-size: 32px;
+}
+
+/* Text Gradiant Color */
+.text-gradient {
+  background: linear-gradient(90deg, #FFA30B,#FF690D, #FF2E0B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/*==================================== 
+  Font Classes
+====================================*/
+
+/* English Font Rules */
+.lang-en {
+  font-family: "EnglishFont", sans-serif;
+}
+
+/* Khmer Font Rules */
+.lang-km {
+  font-family: "KhmerFont", sans-serif;
+}
+
+/* Vietnamese Font Rules */
+.lang-vn {
+  font-family: "VietnameseFont", sans-serif;
+}
+
+/* Chinese Font Rules */
+.lang-cn {
+  font-family: "ChineseFont", sans-serif;
+}
