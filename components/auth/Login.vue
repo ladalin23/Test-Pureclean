@@ -10,9 +10,9 @@
             Hours Doing Laundry?
           </h1>
         </section>
-          <!-- <div class="d-flex justify-center mb-4">
+          <div class="d-flex justify-center mb-4">
             <TelegramLogin/>
-          </div> -->
+          </div>
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button 
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4 rounded-full text-lg font-medium transition-colors shadow-md"

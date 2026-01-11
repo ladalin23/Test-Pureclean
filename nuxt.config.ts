@@ -36,12 +36,18 @@ export default defineNuxtConfig({
   devServer: { port: 5000 },
 
   runtimeConfig: {
+    // Server-side only (private)
+    telegramBotToken: process.env.TELEGRAM_BOT_TOKEN,
+    adminPrivateApi: process.env.ADMIN_PRIVATE_API,
+    adminPrivateApiDev: process.env.ADMIN_PRIVATE_API_DEV,
+
+    // Public (exposed to client)
     public: {
-      MODE: process.env.MODE || 'development',
-      ADMIN_PRIVATE_API: process.env.ADMIN_PRIVATE_API,
-      ADMIN_PUBLIC_API: process.env.ADMIN_PUBLIC_API,
-      ADMIN_PRIVATE_API_DEV: process.env.ADMIN_PRIVATE_API_DEV,
-      ADMIN_PUBLIC_API_DEV: process.env.ADMIN_PUBLIC_API_DEV,
+      telegramBotUsername: process.env.TELEGRAM_BOT_USERNAME,
+      telegramBotReturnUrl: process.env.TELEGRAM_BOT_RETURN_URL,
+      adminPublicApi: process.env.ADMIN_PUBLIC_API,
+      adminPublicApiDev: process.env.ADMIN_PUBLIC_API_DEV,
+      mode: process.env.MODE,
     },
   },
 
