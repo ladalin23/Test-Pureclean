@@ -29,8 +29,8 @@
 <script setup>
   import TelegramLogin from '~/components/auth/TelegramLogin.vue';
 
-  // const handleSignIn = (path) => {
-  //     window.location.href = '/';
-  // };
+  const handleSignIn = (path) => {
+      window.location.href = '/';
+  };
 
 </script>

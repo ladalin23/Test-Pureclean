@@ -1,63 +1,46 @@
 <template>
-  <div class="d-flex justify-center mb-4">
-    <div id="telegram-login"></div>
-  </div>
+  <div id="telegram-login"></div>
 </template>
 
 <script setup>
-import { onMounted, onBeforeUnmount } from 'vue'
-import { userAuth } from '~/store/userAuth'
+import { onMounted } from 'vue';
+import { userAuth } from '~/store/userAuth';
 
-const config = useRuntimeConfig()
-const botUsername = config.public.telegramBotUsername // ✅ from .env
-const userAuthStore = userAuth()
-
-function handleTelegramAuth(user) {
-  const username =
-    user.username || `${user.first_name} ${user.last_name || ''}`
-  const telegram_id = String(user.id)
-  const profile_picture = user.photo_url || ''
-
-  console.log('Telegram user:', user)
-
-  userAuthStore
-    .login(username, telegram_id, profile_picture)
-    .then(() => {
-      console.log('Login successful')
-    })
-    .catch(async (error) => {
-      console.error('Login error:', error)
-      await $swal.fire({
-        title: 'Login failed',
-        text: 'Oops, something went wrong. Please contact us!',
-        icon: 'error',
-        confirmButtonText: 'OK',
-        timer: 2000,
-      })
-    })
-}
+const botUsername = "dalin23testbot";
+const userAuthStore = userAuth();
 
 onMounted(() => {
-  // ✅ Expose globally (required by Telegram widget)
-  window.onTelegramAuth = handleTelegramAuth
+  const script = document.createElement("script");
+  script.src = "https://telegram.org/js/telegram-widget.js?22";
+  script.async = true;
+  script.setAttribute("data-telegram-login", botUsername);
+  script.setAttribute("data-size", "large");
+  script.setAttribute("data-radius", "20");
+  script.setAttribute("data-request-access", "write");
+  script.setAttribute("data-onauth", "onTelegramAuth");
+  document.getElementById("telegram-login").appendChild(script);
+});
 
-  const container = document.getElementById('telegram-login')
-  if (!container || container.children.length > 0) return // ✅ avoid duplicate widget
+// global function
 
-  const script = document.createElement('script')
-  script.src = 'https://telegram.org/js/telegram-widget.js?22'
-  script.async = true
-  script.setAttribute('data-telegram-login', botUsername)
-  script.setAttribute('data-size', 'large')
-  script.setAttribute('data-radius', '20')
-  script.setAttribute('data-request-access', 'write')
-  script.setAttribute('data-onauth', 'onTelegramAuth')
+window.onTelegramAuth = async (user) => {
+  const username = user.username || user.first_name + user.last_name; // Fallback to first name if username is not available
+  const telegram_id = String(user.id); // Telegram user ID
+  console.log("Telegram user:", user);
+  const profile_picture = user.photo_url || "";
+  console.log("Profile picture URL:", profile_picture);
+  try {
+    await userAuthStore.login(username, telegram_id, profile_picture);
+  } catch (error) {
+    console.error("Login error:", error);
+    await $swal.fire({
+      title: 'Login or Signup failed',
+      text: 'Opps have something wrong. Let contact us!',
+      icon: 'error',
+      confirmButtonText: 'OK',
+      timer: 2000
+    });
+  }
 
-  container.appendChild(script)
-})
-
-onBeforeUnmount(() => {
-  const el = document.getElementById('telegram-login')
-  if (el) el.innerHTML = ''
-})
+};
 </script>
