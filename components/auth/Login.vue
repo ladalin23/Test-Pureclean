@@ -31,8 +31,8 @@
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                   rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="triggerTelegramWidget"
+                  rounded-full text-lg font-medium transition-colors shadow-md"
+            @click="signInWithTelegram"
           >
             Sign In
           </button>
@@ -48,13 +48,15 @@ import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
 const route = useRoute();
 
-const triggerTelegramWidget = () => {
-  const widgetBtn = document.querySelector(".tgme_widget_login_button");
-  if (widgetBtn) {
-    widgetBtn.click();
+
+// Custom button triggers Telegram login
+const signInWithTelegram = () => {
+  // TWidgetLogin is injected by Telegram widget
+  if (window.TWidgetLogin && typeof window.TWidgetLogin.auth === "function") {
+    window.TWidgetLogin.auth();
   } else {
-    console.warn("Telegram button not ready, retrying...");
-    setTimeout(triggerTelegramWidget, 500);
+    console.warn("Telegram widget not ready yet, retrying...");
+    setTimeout(signInWithTelegram, 500); // retry until loaded
   }
 };
 
