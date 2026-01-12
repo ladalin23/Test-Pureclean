@@ -30,7 +30,6 @@ window.onTelegramAuth = async (user) => {
   try {
     console.log("User is:", user)
     const authSrr = await userAuthStore.loginWithTelegram(user);
-    console.log(authSrr)
   } catch (error) {
     console.error("Login error:", error);
     await $swal.fire({
@@ -41,18 +40,7 @@ window.onTelegramAuth = async (user) => {
       timer: 2000
     });
   }
+
 };
 
-
-// Function to trigger Telegram login from an external button
-export const triggerTelegramLogin = () => {
-  const container = document.getElementById("telegram-login");
-  const iframe = container.querySelector("iframe");
-  if (iframe) {
-    const botUsername = "testpurecleanbot";
-    window.open(`https://t.me/${botUsername}?start=login`, "_blank");
-  } else {
-    console.error("Telegram widget not ready yet!");
-  }
-};
 </script>
