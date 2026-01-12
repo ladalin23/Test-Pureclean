@@ -23,7 +23,7 @@
         </section>
 
         <!-- Telegram Login -->
-        <div class="d-flex justify-center my-6">
+        <div class="d-flex justify-center hidden my-6">
           <TelegramLogin />
         </div>
 
@@ -32,7 +32,7 @@
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
                    rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="triggerTelegramLogin"
+            @click="triggerTelegramWidget"
           >
             Sign In
           </button>
@@ -48,16 +48,14 @@ import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
 const route = useRoute();
 
-
-const triggerTelegramLogin = () => {
-  // Telegram widget renders a button inside an iframe
-  const iframe = document.querySelector("#telegram-login iframe")
-
-  if (iframe) {
-    iframe.contentWindow?.postMessage("click", "*")
-    iframe.click()
+const triggerTelegramWidget = () => {
+  const widgetBtn = document.querySelector(".tgme_widget_login_button");
+  if (widgetBtn) {
+    widgetBtn.click();
   } else {
-    console.warn("Telegram login button not ready yet")
+    console.warn("Telegram button not ready, retrying...");
+    setTimeout(triggerTelegramWidget, 500);
   }
-}
+};
+
 </script>
