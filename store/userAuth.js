@@ -3,7 +3,7 @@ import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2"
-import { useRouter } from "vue-router"
+import { useRouter, useRoute } from 'vue-router'
 
 function decodeJwtExp(token) {
   if (!token) return null;
@@ -91,24 +91,12 @@ export const userAuth = defineStore("userAuth", {
       return this.user ?? getStoredUser() ?? null;
     },
 
-    
     async loginWithTelegram(telegramUser) {
       const { $AdminPublicAxios } = useNuxtApp()
       const router = useRouter()
+      const route = useRoute() // ✅ get current route safely
 
-      if (!$AdminPublicAxios) {
-        console.error("AdminPublicAxios not initialized")
-        return
-      }
-
-      // ✅ Ensure device token (client only)
-      if (process.client && !localStorage.getItem("device_token")) {
-        const uuid =
-          crypto?.randomUUID?.() ??
-          Math.random().toString(36).substring(2)
-
-        localStorage.setItem("device_token", uuid)
-      }
+      // device token code here...
 
       const payload = {
         id: telegramUser.id,
@@ -123,31 +111,20 @@ export const userAuth = defineStore("userAuth", {
       }
 
       try {
-        const resp = await $AdminPublicAxios.post(
-          "/auth/telegram/verify",
-          payload
-        )
-
-        console.log("Telegram verify response:", resp.data)
-
+        const resp = await $AdminPublicAxios.post("/auth/telegram/verify", payload)
         const { token, user } = resp.data || {}
 
-        if (!token || !user) {
-          throw new Error("Invalid response from server")
-        }
+        if (!token || !user) throw new Error("Invalid response from server")
 
-        // ✅ Save auth state
         this.setToken(token)
         this.setUser(user)
         this.isLoggedIn = true
 
-        // ✅ Safe redirect
-        const next = router.currentRoute.value.query.next || "/"
-        await navigateTo(next)
+        const next = route.query.next || "/" // ✅ use route.query
+        await router.push(next) // ✅ safe redirect
 
       } catch (err) {
         console.error("Telegram login failed:", err?.response?.data || err)
-
         Swal.fire({
           title: "Login failed",
           text: err?.response?.data?.message || "Telegram authentication error",
@@ -156,7 +133,6 @@ export const userAuth = defineStore("userAuth", {
         })
       }
     },
-
 
     async login(email, password) {
       const { $AdminPublicAxios } = useNuxtApp();
