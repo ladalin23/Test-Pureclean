@@ -3,6 +3,7 @@
     <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important;">
       <v-container class="pa-6">
         <!-- Main Content -->
+        <div v-if="Banners.length > 0 && News.length > 0 && loyaltyCard.length > 0">
           <header class="d-flex justify-space-between align-center mb-6">
             <div class="d-flex align-center w-[140px] sm:w-[140px] md:w-[240px]">
               <v-img 
@@ -133,6 +134,11 @@
             class="ma-6"
             elevation="4"
           ></v-btn>
+        </div>
+        <!-- Loading Spinner -->
+        <div v-else class="flex justify-center items-center h-[80vh]">
+          <v-progress-circular indeterminate color="primary" size="70"></v-progress-circular>
+        </div>
       </v-container>
     </v-main>
   </v-app>
@@ -170,10 +176,43 @@
   onMounted(async () => {
     try {
       await bannerStore.fetchBanners()
-      
       await newsStore.fetchNews();
-      
       await loyaltyCardStore.fetchLoyaltyCards();
+      
+      if (bannerStore.banners.length === 0) {
+        bannerStore.banners = [
+          { image_url: "/images/Banner/Washing_machine.jpg" },
+          { image_url: "/images/Banner/Drying_clothes.jpg" },
+          { image_url: "/images/Banner/Preparing_clothes.jpg" },
+        ]
+      }
+
+      
+    if (newsStore.news.length === 0) {
+        newsStore.news = [
+          { 
+            title: "Get 20% Off", 
+            subtitle: "Enjoy 20% off all laundry services untill Sunday", 
+            image_url: "/images/NewsActive/Discount_notification.jpg", 
+            icon: "mdi-tag",
+            global_id: 2 
+          },
+          { 
+            title: "Just a Few Hours", 
+            subtitle: "Clothes cleaned in 2 hours. Limited slots daily", 
+            image_url: "/images/NewsActive/Clothes_express.jpg", 
+            icon: "mdi-alarm",
+            global_id: 1 
+          },
+          { 
+            title: "Dry Cleaning", 
+            subtitle: "Professional care for delicate fabrics and suits.", 
+            image_url: "/images/NewsActive/Iron_clothse.jpg", 
+            icon: "mdi-tshirt-crew",
+            global_id: 3 
+          },
+        ]
+      }
     } catch (e) {
       const msg = e?.response?.data?.message || e?.message || 'Failed to load banners'
       $alert.error(msg)

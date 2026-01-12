@@ -5,21 +5,21 @@
         <v-icon size="28">mdi-chevron-left</v-icon>
       </nuxt-link>
       <v-toolbar-title class="text-[20px] font-medium ml-n4 ps-6">
-        {{New.title}}
+        {{News.title}}
       </v-toolbar-title>
     </v-app-bar>
 
     <v-main>
       <v-container class="pa-4">
         <v-img
-          :src="New.image_url"
+          :src="News.image_url"
           cover
           aspect-ratio="16/9"
           class="rounded-xl mb-6"
         ></v-img>
 
         <div class="text-body-1 text-grey-darken-3 line-height-lg px-2 text-justify">
-          {{New.content}}
+          {{News.content}}
         </div>
       </v-container>
     </v-main>
@@ -42,14 +42,18 @@
 
     const newsStore = useNewsStore()
 
-    const New = ref([])
+    const News = ref([])
     const isLoading = ref(true)
       
     onMounted(async () => {
       try {
         isLoading.value = true
         await newsStore.fetchNew(id);
-        New.value = newsStore.singleNews || []
+        News.value = newsStore.singleNews || []
+        if(News.value.length == 0) {
+          const ids = Number(route.params.id)
+          News.value = promoImages.find(promo => promo.id == ids) || {}
+        }
       } catch (e) {
         const msg = e?.response?.data?.message || e?.message || 'Failed to load news'
         $alert.error(msg)
@@ -57,6 +61,32 @@
         isLoading.value = false
       }
     })
+
+    
+    const promoImages = [
+        {
+            id: 1,
+            title: 'Get 20% Off',
+            image_url: '/images/NewsActive/Discount_notification.jpg',
+            content: 'Experience top-notch cleaning with our state-of-the-art washing machines that ensure your clothes are treated with the utmost care and precision.',
+            icon: 'mdi-tag'
+        },
+        {
+            id: 2,
+            title: 'Just a Few Hours',
+            image_url: '/images/NewsActive/Clothes_express.jpg',
+            content: 'Let our experts handle the folding of your clothes, ensuring they are neatly pressed and ready to wear, saving you time and effort.',
+            icon: 'mdi-alarm'
+        },
+        {
+            id: 3,
+            title: 'Dry Cleaning',
+            subtitle: 'Free pickup and delivery on orders over $20.',
+            image_url: '/images/NewsActive/Iron_clothse.jpg',
+            content: 'Our eco-friendly cleaning process uses sustainable products and methods to protect both your clothes and the environment.',
+            icon: 'mdi-tshirt-crew'
+        }
+    ];
 
 
 </script>

@@ -92,6 +92,32 @@
     onMounted(async () => {
       try {
         await newsStore.fetchNews();
+        
+        if (newsStore.news.length === 0) {
+            newsStore.news = [
+              { 
+                title: "Get 20% Off", 
+                subtitle: "Enjoy 20% off all laundry services untill Sunday", 
+                image_url: "/images/NewsActive/Discount_notification.jpg", 
+                icon: "mdi-tag",
+                global_id: 2 
+              },
+              { 
+                title: "Just a Few Hours", 
+                subtitle: "Clothes cleaned in 2 hours. Limited slots daily", 
+                image_url: "/images/NewsActive/Clothes_express.jpg", 
+                icon: "mdi-alarm",
+                global_id: 1 
+              },
+              { 
+                title: "Dry Cleaning", 
+                subtitle: "Professional care for delicate fabrics and suits.", 
+                image_url: "/images/NewsActive/Iron_clothse.jpg", 
+                icon: "mdi-tshirt-crew",
+                global_id: 3 
+              },
+            ]
+          }
       } catch (e) {
         const msg = e?.response?.data?.message || e?.message || 'Failed to load news'
         $alert.error(msg)

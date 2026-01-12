@@ -56,41 +56,67 @@
 </template>
 
 <script setup lang="ts">
-    import { useRouter, useRoute } from 'vue-router'
-    import { useNuxtApp } from '#app';
-    
-    const nuxtApp = useNuxtApp();
-    const translate = nuxtApp.$translate as (key: string) => string;
+  import { ref, onMounted } from 'vue'
+  import { useRouter, useRoute } from 'vue-router'
+  import { useNuxtApp } from '#app'
+  import { useGuideStore } from '~/store/guide'
 
-    const router = useRouter()
-    const route = useRoute()
-    const slug = route.params.slug || 'washing'
-    const MainTitle = slug + "_guides";
-    import { useGuideStore } from '~/store/guide'
+  const nuxtApp = useNuxtApp()
+  const translate = nuxtApp.$translate as (key: string) => string
+  const { $alert } = nuxtApp
+  const router = useRouter()
+  const route = useRoute()
+  const slug = (route.params.slug as string) || 'washing'
+  const MainTitle = slug + "_guides";
 
-    const { $alert } = useNuxtApp();
 
-    const guideStore = useGuideStore()
+  const guideStore = useGuideStore()
+  const isLoading = ref(true)
 
-    const guids = computed(() => (guideStore.guides || []).filter(guide => guide.type === slug))
-    const isLoading = ref(true)
+  // guidDetail fallback data
+  const guidDetail = {
+    washing: [
+      { title: 'Load clothes in machine, Close side||ដាក់សំលៀកបំពាក់ហើយបិទទ្វារ', image_url: '/images/Guids/ClothInMachine.png' },
+      { title: 'Add liquid detergent & Fabric softener||ដាក់ទឹកសាប៊ូ និងទឹកក្រអូបសម្រាប់បោកគក់ សំលៀកបំពាក់', image_url: '/images/Guids/FabricSoftener.png' },
+      { title: 'Select water temperature setting||ជ្រើសរើសសីតុណ្ហភាពទឹកសម្រាប់ប្រើក្នុងការបោកគក់', image_url: '/images/Guids/waterTemperature.png' },
+      { title: 'Select drying temperature||ជ្រើសរើសសីតុណ្ហភាពក្នុងការសម្ងួត', image_url: '/images/Guids/dryingTemperature.png' },
+      { title: 'Press Start button||ចុចប៊ូតុង Start ដើម្បីចាប់ផ្តើមការសម្ងួត', image_url: '/images/Guids/ButtonStart.png' }
+    ],
+    drying: [
+      { title: 'Load clothes in machine, Close side||ដាក់សំលៀកបំពាក់ហើយបិទទ្វារ', image_url: '/images/Guids/ClothInMachine.png' },
+      { title: 'Select water temperature setting||ជ្រើសរើសសីតុណ្ហភាពទឹកសម្រាប់ប្រើក្នុងការបោកគក់', image_url: '/images/Guids/waterTemperature.png' },
+      { title: 'Select drying temperature||ជ្រើសរើសសីតុណ្ហភាពក្នុងការសម្ងួត', image_url: '/images/Guids/dryingTemperature.png' },
+      { title: 'Press Start button||ចុចប៊ូតុង Start ដើម្បីចាប់ផ្តើមការសម្ងួត', image_url: '/images/Guids/ButtonStart.png' }
+    ]
+  }
 
-      
-    onMounted(async () => {
-      try {
-        await guideStore.fetchGuides();
-      } catch (e) {
-        const msg = e?.response?.data?.message || e?.message || 'Failed to load news'
-        $alert.error(msg)
-      } finally {
-        isLoading.value = false
+  // Reactive guides array
+  const guids = ref([] as Array<any>)
+
+  onMounted(async () => {
+    isLoading.value = true
+    try {
+      await guideStore.fetchGuides()
+
+      // Filter by slug if store has guides, else fallback to guidDetail
+      if (guideStore.guides.length > 0) {
+        guids.value = guideStore.guides.filter(guide => guide.type === slug)
+      } else {
+        guids.value = guidDetail[slug] || []
       }
-    })
 
-    definePageMeta({
-        layout: 'detailLayout'
-    });
+    } catch (e) {
+      const msg = e?.response?.data?.message || e?.message || 'Failed to load guides'
+      $alert.error(msg)
+      guids.value = guidDetail[slug] || []
+    } finally {
+      isLoading.value = false
+    }
+  })
 
+  definePageMeta({
+    layout: 'detailLayout'
+  })
 </script>
 
 <style scoped>

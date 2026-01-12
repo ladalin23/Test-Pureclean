@@ -10,7 +10,9 @@ export const useBannerStore = defineStore('banner', ()=>{
 
     const fetchBanners = async () => {
         const res = await api.get('/banners')
+        console.log(res?.data?.data);
         const pageData = res?.data?.data || {}
+        console.log(pageData);
         banners.value = Array.isArray(pageData.data) ? pageData.data : []
     }
     return {
