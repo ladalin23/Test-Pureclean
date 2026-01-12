@@ -30,6 +30,7 @@ window.onTelegramAuth = async (user) => {
   try {
     console.log("User is:", user)
     const authSrr = await userAuthStore.loginWithTelegram(user);
+    console.log(authSrr)
   } catch (error) {
     console.error("Login error:", error);
     await $swal.fire({
