@@ -47,6 +47,9 @@
 import {onMounted} from "vue";
 import {userAuth} from "~/store/userAuth";
 
+
+let telegramButton = null;
+
 const botUsername = "testpurecleanbot"; // Telegram bot username
 const userAuthStore = userAuth();
 const {$swal} = useNuxtApp();
@@ -60,6 +63,12 @@ onMounted(() => {
   script.setAttribute("data-onauth", "onTelegramAuth(user)");
   script.setAttribute("data-request-access", "write");
   document.getElementById("telegram-login").appendChild(script);
+  
+  setTimeout(() => {
+    telegramButton = document.querySelector(
+      "#telegram-login iframe"
+    );
+  }, 1000);
 });
 
 window.onTelegramAuth = async (user) => {
