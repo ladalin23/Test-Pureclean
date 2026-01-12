@@ -1,44 +1,99 @@
+// ~/store/userAuth.js
 import { defineStore } from "pinia";
-import { useNuxtApp, navigateTo, useRoute } from "#app";
+import { useNuxtApp } from "#app";
 import Cookies from "js-cookie";
+
+function decodeJwtExp(token) {
+  if (!token) return null;
+  try {
+    const base64 = token.split(".")[1];
+    if (!base64) return null;
+    const json =
+      typeof window === "undefined"
+        ? Buffer.from(base64, "base64").toString("utf-8")
+        : atob(base64);
+    const payload = JSON.parse(json);
+    return typeof payload?.exp === "number" ? payload.exp : null;
+  } catch {
+    return null;
+  }
+}
+
+// safe getter for localStorage user (client-only)
+function getStoredUser() {
+  if (process.client) {
+    try {
+      return JSON.parse(localStorage.getItem("user") || "null");
+    } catch {
+      return null;
+    }
+  }
+  return null;
+}
 
 export const userAuth = defineStore("userAuth", {
   state: () => ({
+    // token stays in cookie so server requests can still be authed if you forward it
     token: Cookies.get("token") || null,
-    user: null,
+
+    // IMPORTANT: hydrate user immediately on client so UI can render after refresh
+    user: getStoredUser(),
+
     isLoggedIn: false,
+
+    // internal guards
+    _initDone: false,
+    _refreshing: false,
+    _refreshPromise: null,
   }),
 
   actions: {
+    _syncAxiosAuthHeader(token) {
+      const { $AdminPrivateAxios } = useNuxtApp();
+      if ($AdminPrivateAxios) {
+        if (token) {
+          $AdminPrivateAxios.defaults.headers.common.Authorization = `Bearer ${token}`;
+        } else {
+          delete $AdminPrivateAxios.defaults.headers.common.Authorization;
+        }
+      }
+    },
+
     setUser(user) {
-      this.user = user;
+      this.user = user || null;
+      if (process.client) {
+        if (user) {
+          localStorage.setItem("user", JSON.stringify(user));
+        } else {
+          localStorage.removeItem("user");
+        }
+      }
     },
 
     setToken(token) {
-      this.token = token;
-      if (token) Cookies.set("token", token, { sameSite: "lax", secure: true, path: "/" });
-      else Cookies.remove("token");
+      if (token) {
+        Cookies.set("token", token, { sameSite: "lax", secure: true, path: "/" });
+      } else {
+        Cookies.remove("token");
+      }
+      this.token = token || null;
+      this._syncAxiosAuthHeader(this.token);
     },
 
     getToken() {
-      return Cookies.get("token");
+      return Cookies.get("token") || null;
     },
 
     getUser() {
-      return this.user;
+      // return reactive state first; fallback to storage if needed
+      return this.user ?? getStoredUser() ?? null;
     },
 
-    logout() {
-      this.token = null;
-      this.user = null;
-      this.isLoggedIn = false;
-      Cookies.remove("token");
-      navigateTo("/auth");
-    },
-
+    
     async loginWithTelegram(telegramUser) {
-      const nuxtApp = useNuxtApp();
-      const $axios = nuxtApp.$AdminPublicAxios;
+      
+      const { $AdminPublicAxios } = useNuxtApp();
+
       if (!$axios) throw new Error("Axios not initialized");
 
       if (process.client && !localStorage.getItem("device_token")) {
@@ -58,7 +113,7 @@ export const userAuth = defineStore("userAuth", {
       };
 
       try {
-        const resp = await $axios.post("/auth/telegram/verify", payload);
+        const resp = await $AdminPublicAxios.post("/auth/telegram/verify", payload);
 
         console.log("Telegram verify response:", resp.data); // <--- important
 
@@ -89,62 +144,155 @@ export const userAuth = defineStore("userAuth", {
       }
     },
 
-    async refreshToken() {
-      try {
-        const nuxtApp = useNuxtApp();
-        const $axios = nuxtApp.$AdminPrivateAxios;
-        if (!$axios) throw new Error("Axios not initialized");
 
-        const resp = await $axios.post("/refresh-token");
-        const token = resp.data?.data;
-        if (!token) {
-          this.logout();
-          return;
-        }
+    async login(email, password) {
+      const { $AdminPublicAxios } = useNuxtApp();
 
-        this.setToken(token);
-        this.isLoggedIn = true;
-      } catch {
-        this.logout();
+      const resp = await $AdminPublicAxios.post("/login", { email, password });
+      if (resp.status !== 200) {
+        throw new Error(`Error: Received status code ${resp.status}`);
       }
+
+      const token = resp?.data?.data?.token;
+      const user = resp?.data?.data?.user;
+
+      this.setUser(user);
+      this.setToken(token);
+      this.isLoggedIn = true;
+
+      navigateTo("/");
+    },
+
+    async logout() {
+      const { $AdminPrivateAxios } = useNuxtApp();
+      try {
+        await $AdminPrivateAxios.post("/logout");
+      } catch {
+        // ignore
+      }
+      this.setToken(null);
+      this.setUser(null);
+      this.isLoggedIn = false;
+      navigateTo("/auth");
+    },
+
+    async refreshToken() {
+      // prevent concurrent refreshes
+      if (this._refreshing && this._refreshPromise) return this._refreshPromise;
+
+      const run = async () => {
+        const { $AdminPrivateAxios } = useNuxtApp();
+        if (!this.token) return null;
+
+        try {
+          const resp = await $AdminPrivateAxios.post("/refresh-token");
+          // support either {data:"jwt"} or {data:{token:"jwt"}}
+          const nextToken =
+            typeof resp?.data?.data === "string"
+              ? resp.data.data
+              : resp?.data?.data?.token;
+
+          if (!nextToken) return null;
+
+          this.setToken(nextToken);
+          this.isLoggedIn = true;
+          return nextToken;
+        } catch (e) {
+          this.setToken(null);
+          this.isLoggedIn = false;
+          return null;
+        }
+      };
+
+      this._refreshing = true;
+      this._refreshPromise = run().finally(() => {
+        this._refreshing = false;
+        this._refreshPromise = null;
+      });
+      return this._refreshPromise;
     },
 
     async checkTokenExpired() {
+      // always re-read cookie first
       this.token = this.getToken();
+      this._syncAxiosAuthHeader(this.token);
+
       if (!this.token) {
-        this.logout();
+        this.isLoggedIn = false;
         return false;
       }
 
-      try {
-        const payloadBase64 = this.token.split(".")[1];
-        const payload = JSON.parse(atob(payloadBase64));
-        const currentTime = Date.now() / 1000;
+      const exp = decodeJwtExp(this.token);
+      const now = Math.floor(Date.now() / 1000);
 
-        if (payload.exp && payload.exp < currentTime) {
-          this.logout();
+      if (!exp || exp <= now) {
+        this.isLoggedIn = false;
+        return false;
+      }
+
+      // refresh if expiring within 2 days
+      const REFRESH_THRESHOLD_SECONDS = 3600 * 24 * 2; // 2 days
+      if (exp - now < REFRESH_THRESHOLD_SECONDS) {
+        await this.refreshToken();
+        const freshExp = decodeJwtExp(this.token);
+        if (!freshExp || freshExp <= Math.floor(Date.now() / 1000)) {
+          this.isLoggedIn = false;
           return false;
         }
-
-        this.isLoggedIn = true;
-        return true;
-      } catch {
-        this.logout();
-        return false;
       }
+
+      this.isLoggedIn = true;
+      return true;
     },
 
-    initializeSession() {
+    async initializeSession() {
+      if (this._initDone) return;
+
+      // 1) hydrate from storage immediately (client)
+      if (process.client) {
+        const storedUser = getStoredUser();
+        if (storedUser) this.user = storedUser;
+
+        // keep tabs in sync
+        window.addEventListener("storage", (e) => {
+          if (e.key === "user") {
+            try {
+              this.user = e.newValue ? JSON.parse(e.newValue) : null;
+            } catch {
+              this.user = null;
+            }
+          }
+        });
+      }
+
+      // 2) hydrate token and validate it
       this.token = this.getToken();
+      this._syncAxiosAuthHeader(this.token);
 
       if (!this.token) {
-        this.logout();
+        this.isLoggedIn = false;
+        this._initDone = true;
         return;
       }
 
-      this.checkTokenExpired().then((isValid) => {
-        if (!isValid) this.logout();
-      });
+      await this.checkTokenExpired();
+
+      // 3) If token valid but user missing (e.g., storage cleared), optionally fetch profile
+      if (this.isLoggedIn && !this.user) {
+        try {
+          const { $AdminPrivateAxios } = useNuxtApp();
+          const me = await $AdminPrivateAxios.get("/me"); // adjust to your profile endpoint
+          // accept either {data:{...}} or flat {...}
+          const u = me?.data?.data ?? me?.data ?? null;
+          if (u) this.setUser(u);
+        } catch {
+          // if /me fails, consider user not logged in
+          this.isLoggedIn = false;
+          this.setToken(null);
+        }
+      }
+
+      this._initDone = true;
     },
   },
 });
