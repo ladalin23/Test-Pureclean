@@ -28,8 +28,8 @@ window.onTelegramAuth = async (user) => {
   const profile_picture = user.photo_url || "";
   console.log("Profile picture URL:", profile_picture);
   try {
+    console.log("User is:", user)
     const authSrr = await userAuthStore.loginWithTelegram(user);
-    console.log("Auth Store is:", authSrr)
   } catch (error) {
     console.error("Login error:", error);
     await $swal.fire({
