@@ -132,6 +132,7 @@ export const userAuth = defineStore("userAuth", {
       if (!token || !user) {
         throw new Error("Invalid response from server")
       }
+      console.log('token')
 
       // ✅ Save auth state
       this.setToken(token)
