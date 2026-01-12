@@ -32,7 +32,7 @@
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
                    rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="goHome"
+            @click="triggerTelegramLogin"
           >
             Sign In
           </button>
@@ -48,7 +48,16 @@ import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
 const route = useRoute();
 
-const goHome = () => {
-  window.location.href = route.query.next || "/";
-};
+
+const triggerTelegramLogin = () => {
+  // Telegram widget renders a button inside an iframe
+  const iframe = document.querySelector("#telegram-login iframe")
+
+  if (iframe) {
+    iframe.contentWindow?.postMessage("click", "*")
+    iframe.click()
+  } else {
+    console.warn("Telegram login button not ready yet")
+  }
+}
 </script>
