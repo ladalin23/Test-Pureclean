@@ -99,7 +99,6 @@ export const userAuth = defineStore("userAuth", {
         return
       }
 
-      // ✅ Ensure device token (client only)
       if (process.client && !localStorage.getItem("device_token")) {
         const uuid =
           crypto?.randomUUID?.() ??
@@ -107,13 +106,11 @@ export const userAuth = defineStore("userAuth", {
         localStorage.setItem("device_token", uuid)
       }
 
-        console.log("Telegram verify response1:", resp.payload)
       try {
-        console.log("Telegram verify response:", resp.payload)
-        const resp = await $AdminPublicAxios.post("/auth/telegram/verify", telegramUser )
-        console.log(resp);
-
-        console.log("Telegram verify response:", resp.data)
+        const resp = await $AdminPublicAxios.post(
+          "/auth/telegram/verify",
+          telegramUser
+        )
 
         const { token, user } = resp.data || {}
 
@@ -121,13 +118,11 @@ export const userAuth = defineStore("userAuth", {
           throw new Error("Invalid response from server")
         }
 
-        // ✅ Save auth state
         this.setToken(token)
         this.setUser(user)
         this.isLoggedIn = true
 
-        return user;
-
+        return user
       } catch (err) {
         console.error("Telegram login failed:", err?.response?.data || err)
 
