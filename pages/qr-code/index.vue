@@ -1,9 +1,9 @@
 <template>
-    <v-main class="d-flex align-center justify-center font-roboto" style="height: 87vh;" >
+    <v-main class="d-flex align-center justify-center font-roboto h-[89vh] sm:h-[87vh]" >
     <img src="/images/Background/QR_Code.png" alt="" class="w-full h-full object-cover opacity-90 absolute bottom-0 z-0">
-    <v-container fluid class="fill-height z-10 qr-payment-bg d-flex flex-column align-center justify-center text-white pa-6 mt-[150px]">
-      <div class="text-center mb-5">
-        <h1 class="text-[28px] font-medium z-10 mb-2">{{translate("my_qr")}}</h1>
+    <v-container fluid class="fill-height z-10 qr-payment-bg d-flex flex-column align-center justify-center text-white pa-6 mt-[90px] sm:mt-[150px]">
+      <div class="text-center mb-5 sm:mb-5">
+        <h1 class="text-[28px] font-medium z-10 mb-0 sm:mb-2">{{translate("my_qr")}}</h1>
         <p class="text-[14px] font-normal">
           {{ translate("ready_to_scan_showthis_qr_code_to") }} <br /> {{translate("the_merchant")}}
         </p>

@@ -26,7 +26,7 @@
 
       <v-btn value="/profile" :to="'/profile'">
         <v-icon>mdi-account</v-icon>
-        <span>My Profile</span>
+        <span >Profile</span>
       </v-btn>
     </v-bottom-navigation>
   </v-footer>

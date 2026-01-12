@@ -16,7 +16,7 @@
         </div>
       </v-sheet>
 
-      <v-container class="mt-36 md:mt-96 pt-10">
+      <v-container class=" mt-[120px] md:mt-96 pt-10">
         
         <h3 class="text-[20px] font-medium mb-4">{{translate("reward_history")}}</h3>
         

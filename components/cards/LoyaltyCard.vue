@@ -1,9 +1,9 @@
 <template>
   <v-card
-    class="loyalty-background rounded-xl pa-5 pa-md-10 text-white d-flex flex-column justify-space-between overflow-hidden card-container"
+    class="loyalty-background rounded-xl pa-2 sm:pa5 pa-md-10 text-white d-flex flex-column justify-space-between overflow-hidden card-container"
     elevation="4"
   >
-    <div class="text-center mb-2">
+    <div class="text-center mb-0 sm:mb-2">
       <h3 class="font-amoria mb-0 text-h5 text-md-h3">LOYALTY CARD</h3>
       <div class="d-flex flex-column align-center mt-1">
         <div class="w-75 w-md-50 h-px bg-white opacity-60"></div>
@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <div class="d-flex align-center justify-space-between flex-grow-1 my-4">
+    <div class="d-flex align-center justify-space-between flex-grow-1 my-0 sm:my-4">
       <div class="stamps-grid flex-grow-1 mr-4 relative">
         <div
           v-for="(stamp, i) in loyaltyCard.slice(0, 10)"
@@ -98,7 +98,6 @@
     }
     .card-container {
         /* Height adjustments to match aspect ratio */
-        min-height: 240px; 
         aspect-ratio: 1.6 / 1;
       }
 
