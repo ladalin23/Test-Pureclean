@@ -107,23 +107,11 @@ export const userAuth = defineStore("userAuth", {
         localStorage.setItem("device_token", uuid)
       }
 
-      const payload = {
-        id: telegramUser.id,
-        first_name: telegramUser.first_name ?? null,
-        last_name: telegramUser.last_name ?? null,
-        username: telegramUser.username ?? null,
-        photo_url: telegramUser.photo_url ?? null,
-        auth_date: telegramUser.auth_date,
-        hash: telegramUser.hash,
-        token: localStorage.getItem("device_token"),
-        platform: "web",
-      }
-
+        console.log("Telegram verify response:", resp.payload)
       try {
-        const resp = await $AdminPublicAxios.post(
-          "/auth/telegram/verify",
-          payload
-        )
+        console.log("Telegram verify response:", resp.payload)
+        const resp = await $AdminPublicAxios.post("/auth/telegram/verify", telegramUser )
+        console.log(resp);
 
         console.log("Telegram verify response:", resp.data)
 
