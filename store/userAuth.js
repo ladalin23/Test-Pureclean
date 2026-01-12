@@ -91,13 +91,22 @@ export const userAuth = defineStore("userAuth", {
 
     
     async loginWithTelegram(telegramUser) {
-      
-      const { $AdminPublicAxios } = useNuxtApp();
+      const { $AdminPublicAxios } = useNuxtApp()
 
-      if (!$axios) throw new Error("Axios not initialized");
+      // ✅ Correct axios check
+      if (!$AdminPublicAxios) {
+        throw new Error("AdminPublicAxios not initialized")
+      }
 
-      if (process.client && !localStorage.getItem("device_token")) {
-        localStorage.setItem("device_token", crypto.randomUUID());
+      // ✅ Ensure device token exists (client-side only)
+      if (process.client) {
+        if (!localStorage.getItem("device_token")) {
+          const uuid =
+            crypto?.randomUUID?.() ??
+            Math.random().toString(36).substring(2)
+
+          localStorage.setItem("device_token", uuid)
+        }
       }
 
       const payload = {
@@ -110,39 +119,45 @@ export const userAuth = defineStore("userAuth", {
         hash: telegramUser.hash,
         token: localStorage.getItem("device_token"),
         platform: "web",
-      };
+      }
 
       try {
-        const resp = await $AdminPublicAxios.post("/auth/telegram/verify", payload);
+        const resp = await $AdminPublicAxios.post(
+          "/auth/telegram/verify",
+          payload
+        )
 
-        console.log("Telegram verify response:", resp.data); // <--- important
+        console.log("Telegram verify response:", resp.data)
 
-        const token = resp.data.token; // make sure this matches Laravel response
-        const user = resp.data.user;  // make sure this exists
+        // ✅ Validate backend response
+        const { token, user } = resp.data || {}
 
-        if (!token || !user) throw new Error("Invalid response from server");
+        if (!token || !user) {
+          throw new Error("Invalid response from server")
+        }
 
-        this.setToken(token);
-        this.setUser(user);
-        this.isLoggedIn = true;
+        // ✅ Save auth state
+        this.setToken(token)
+        this.setUser(user)
+        this.isLoggedIn = true
 
-        const route = useRoute();
-        navigateTo(route.query.next || "/");
+        // ✅ Redirect
+        const route = useRoute()
+        await navigateTo(route.query.next || "/")
 
       } catch (err) {
-        console.error("Telegram login failed:", err);
+        console.error("Telegram login failed:", err?.response?.data || err)
 
-        // SweetAlert
-        import("sweetalert2").then(({ default: Swal }) => {
-          Swal.fire({
-            title: "Login failed",
-            text: "Telegram authentication error",
-            icon: "error",
-            timer: 2000,
-          });
-        });
+        // SweetAlert error
+        const { default: Swal } = await import("sweetalert2")
+        Swal.fire({
+          title: "Login failed",
+          text: err?.response?.data?.message || "Telegram authentication error",
+          icon: "error",
+          timer: 2000,
+        })
       }
-    },
+    }
 
 
     async login(email, password) {
