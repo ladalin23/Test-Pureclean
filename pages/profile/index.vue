@@ -22,7 +22,7 @@
 
         <div class="w-full py-3 mb-[26px]">
             <v-list class="!text-[#7F7F7F]">
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" @click="handleLink('/profile/user-information')">
+                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" :to="'/profile/user-information'" >
                     <template v-slot:prepend>
                         <v-icon icon="mdi-account" color="#7F7F7F" size="24" ></v-icon>
                     </template>
@@ -32,7 +32,7 @@
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" @click="handleLink('/profile/languages')">
+                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" :to="'/profile/languages'" >
                     <template v-slot:prepend>
                         <v-icon icon="mdi-web"></v-icon>
                     </template>
@@ -65,7 +65,7 @@
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg" @click="handleLink('/profile/rate-service')">
+                <v-list-item class="!bg-[#EAEFF2] rounded-lg"  :to="'/profile/rate-service'">
                     <template v-slot:prepend>
                         <v-icon icon="mdi-star-outline"></v-icon>
                     </template>

@@ -1,7 +1,7 @@
 <template>
   <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important;">
     <!-- Loading Spinner -->
-    <v-container v-if="Rewards.length > 0 && loyaltyCard.length > 0" class="pa-0 fill-height align-start">
+    <v-container class="pa-0 fill-height align-start">
       <v-sheet
         color="#35667D"
         height="250"
@@ -50,10 +50,6 @@
         </v-list>
       </v-container>
     </v-container>
-    
-    <div v-else class="flex justify-center items-center h-[80vh]">
-      <v-progress-circular indeterminate color="primary" size="70"></v-progress-circular>
-    </div>
   </v-main>
 </template>
 

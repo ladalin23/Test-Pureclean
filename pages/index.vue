@@ -3,7 +3,6 @@
     <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important;">
       <v-container class="pa-6">
         <!-- Main Content -->
-        <div v-if="Banners.length > 0 && News.length > 0 && loyaltyCard.length > 0">
           <header class="d-flex justify-space-between align-center mb-6">
             <div class="d-flex align-center w-[140px] sm:w-[140px] md:w-[240px]">
               <v-img 
@@ -134,11 +133,6 @@
             class="ma-6"
             elevation="4"
           ></v-btn>
-        </div>
-        <!-- Loading Spinner -->
-        <div v-else class="flex justify-center items-center h-[80vh]">
-          <v-progress-circular indeterminate color="primary" size="70"></v-progress-circular>
-        </div>
       </v-container>
     </v-main>
   </v-app>
