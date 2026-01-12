@@ -107,7 +107,7 @@ export const userAuth = defineStore("userAuth", {
         localStorage.setItem("device_token", uuid)
       }
 
-        console.log("Telegram verify response:", resp.payload)
+        console.log("Telegram verify response1:", resp.payload)
       try {
         console.log("Telegram verify response:", resp.payload)
         const resp = await $AdminPublicAxios.post("/auth/telegram/verify", telegramUser )
@@ -126,10 +126,7 @@ export const userAuth = defineStore("userAuth", {
         this.setUser(user)
         this.isLoggedIn = true
 
-        // ✅ Simply reload page or redirect to home
-        if (process.client) {
-          window.location.href = "/" // returns to home page
-        }
+        return user;
 
       } catch (err) {
         console.error("Telegram login failed:", err?.response?.data || err)
