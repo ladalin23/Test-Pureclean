@@ -138,6 +138,11 @@ export const userAuth = defineStore("userAuth", {
         this.setUser(user)
         this.isLoggedIn = true
 
+        // ✅ Simply reload page or redirect to home
+        if (process.client) {
+          window.location.href = "/" // returns to home page
+        }
+
       } catch (err) {
         console.error("Telegram login failed:", err?.response?.data || err)
 
