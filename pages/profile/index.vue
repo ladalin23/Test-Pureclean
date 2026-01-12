@@ -1,5 +1,5 @@
 <template>
-    <v-main class="d-flex align-center justify-center font-roboto bg-white" >
+    <v-main class="d-flex align-center justify-center font-roboto bg-white dark:bg-black" >
       <v-container fluid class="fill-height d-flex flex-column align-center justify-center pa-6 pt-12">
         <div class="text-center mb-8 w-full text-[#323232]">
             <h2 class="text-h6 font-medium mb-12 my-2">{{translate("my_profile")}}</h2>
@@ -42,28 +42,36 @@
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4">
+                <v-list-item 
+                    :class="[
+                    '!rounded-lg mb-4',
+                    enabled ? 'bg-gray-800 text-white' : 'bg-[#EAEFF2] text-black'
+                    ]"
+                >
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-white-balance-sunny"></v-icon>
+                    <v-icon icon="mdi-white-balance-sunny"></v-icon>
                     </template>
+
                     <v-list-item-title>{{ translate("dark_mode") }}</v-list-item-title>
+
                     <template v-slot:append>
-                        <label class="relative inline-flex items-center cursor-pointer">
-                            <input 
-                                type="checkbox" 
-                                v-model="enabled" 
-                                class="sr-only peer"
-                            >
-                            <div class="w-12 h-6 bg-gray-400 rounded-full peer 
-                                        peer-checked:bg-blue-600 transition-colors duration-300">
-                            </div>
-                            <div class="absolute left-[1px] top-[1px] w-[22px] h-[22px] bg-white rounded-full 
-                                        transition-transform duration-300 
-                                        peer-checked:translate-x-6">
-                            </div>
-                        </label>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input 
+                        type="checkbox" 
+                        v-model="enabled" 
+                        class="sr-only peer"
+                        >
+                        <div class="w-12 h-6 bg-gray-400 rounded-full peer 
+                                    peer-checked:bg-blue-600 transition-colors duration-300">
+                        </div>
+                        <div class="absolute left-[1px] top-[1px] w-[22px] h-[22px] bg-white rounded-full 
+                                    transition-transform duration-300 
+                                    peer-checked:translate-x-6">
+                        </div>
+                    </label>
                     </template>
                 </v-list-item>
+
 
                 <v-list-item class="!bg-[#EAEFF2] rounded-lg"  :to="'/profile/rate-service'">
                     <template v-slot:prepend>
@@ -223,4 +231,24 @@
         }
     };
 
+    const enabled = ref(false)
+
+    // On mount, check saved preference
+    onMounted(() => {
+    const saved = localStorage.getItem('dark')
+    if (saved === 'true') {
+        enabled.value = true
+        document.documentElement.classList.add('dark')
+    }
+    })
+
+    // Watch the toggle and update dark class
+    watch(enabled, (val) => {
+        if (val) {
+            document.documentElement.classList.add('dark')
+        } else {
+            document.documentElement.classList.remove('dark')
+        }
+            localStorage.setItem('dark', val)
+    })
 </script>
