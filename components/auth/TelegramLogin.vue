@@ -40,6 +40,18 @@ window.onTelegramAuth = async (user) => {
       timer: 2000
     });
   }
+};
 
+export const triggerTelegramLogin = () => {
+  const container = document.getElementById("telegram-login");
+  const iframe = container.querySelector("iframe");
+  if (iframe) {
+    // Telegram widget uses shadow DOM, so direct click doesn't work
+    // Workaround: open the bot in a new tab (Telegram login flow)
+    const botUsername = "testpurecleanbot";
+    window.open(`https://t.me/${botUsername}?start=login`, "_blank");
+  } else {
+    console.error("Telegram widget not ready yet!");
+  }
 };
 </script>

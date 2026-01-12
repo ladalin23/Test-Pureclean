@@ -6,7 +6,7 @@
             
             <div class="position-relative d-inline-block rounded-full border-2 border-[#35667D]">
                 <v-avatar size="100">
-                    <v-img src="https://cdn.vuetifyjs.com/images/john.jpg" alt="Srun Khyn" />
+                    <v-img :src="currentUser.profile_picture" alt="Srun Khyn" />
                 </v-avatar>
                 <v-btn
                     icon="mdi-pencil"

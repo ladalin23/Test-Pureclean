@@ -31,7 +31,7 @@
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                   rounded-full text-lg font-medium transition-colors shadow-md"
+                  rounded-full text-lg font-medium transition-colors shadow-md"
             @click="goHome"
           >
             Sign In
@@ -44,11 +44,10 @@
 </template>
 
 <script setup>
-import TelegramLogin from "~/components/auth/TelegramLogin.vue";
-
-const route = useRoute();
+import TelegramLogin, { triggerTelegramLogin } from "~/components/auth/TelegramLogin.vue";
 
 const goHome = () => {
-  window.location.href = route.query.next || "/";
+  // Trigger Telegram login instead of redirect
+  triggerTelegramLogin();
 };
 </script>
