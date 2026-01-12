@@ -145,7 +145,7 @@ export const userAuth = defineStore("userAuth", {
         }
 
       } catch (err) {
-        console.error("Telegram login failed:", err?.response?.data || err)
+        console.error("Telegram login failed:", err?.response)
 
         Swal.fire({
           title: "Login failed",
