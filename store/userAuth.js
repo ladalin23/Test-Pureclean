@@ -41,7 +41,6 @@ export const userAuth = defineStore("userAuth", {
       const $axios = nuxtApp.$AdminPublicAxios;
       if (!$axios) throw new Error("Axios not initialized");
 
-      // Ensure device token exists
       if (process.client && !localStorage.getItem("device_token")) {
         localStorage.setItem("device_token", crypto.randomUUID());
       }
@@ -60,8 +59,11 @@ export const userAuth = defineStore("userAuth", {
 
       try {
         const resp = await $axios.post("/auth/telegram/verify", payload);
-        const token = resp?.data?.token;
-        const user = resp?.data?.user;
+
+        console.log("Telegram verify response:", resp.data); // <--- important
+
+        const token = resp.data.token; // make sure this matches Laravel response
+        const user = resp.data.user;  // make sure this exists
 
         if (!token || !user) throw new Error("Invalid response from server");
 
@@ -69,12 +71,21 @@ export const userAuth = defineStore("userAuth", {
         this.setUser(user);
         this.isLoggedIn = true;
 
-        // Redirect to next or home
         const route = useRoute();
         navigateTo(route.query.next || "/");
+
       } catch (err) {
         console.error("Telegram login failed:", err);
-        throw err;
+
+        // SweetAlert
+        import("sweetalert2").then(({ default: Swal }) => {
+          Swal.fire({
+            title: "Login failed",
+            text: "Telegram authentication error",
+            icon: "error",
+            timer: 2000,
+          });
+        });
       }
     },
 
