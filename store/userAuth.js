@@ -2,6 +2,8 @@
 import { defineStore } from "pinia";
 import { useNuxtApp } from "#app";
 import Cookies from "js-cookie";
+import Swal from "sweetalert2"
+import { useRouter } from "vue-router"
 
 function decodeJwtExp(token) {
   if (!token) return null;
@@ -92,21 +94,20 @@ export const userAuth = defineStore("userAuth", {
     
     async loginWithTelegram(telegramUser) {
       const { $AdminPublicAxios } = useNuxtApp()
+      const router = useRouter()
 
-      // ✅ Correct axios check
       if (!$AdminPublicAxios) {
-        throw new Error("AdminPublicAxios not initialized")
+        console.error("AdminPublicAxios not initialized")
+        return
       }
 
-      // ✅ Ensure device token exists (client-side only)
-      if (process.client) {
-        if (!localStorage.getItem("device_token")) {
-          const uuid =
-            crypto?.randomUUID?.() ??
-            Math.random().toString(36).substring(2)
+      // ✅ Ensure device token (client only)
+      if (process.client && !localStorage.getItem("device_token")) {
+        const uuid =
+          crypto?.randomUUID?.() ??
+          Math.random().toString(36).substring(2)
 
-          localStorage.setItem("device_token", uuid)
-        }
+        localStorage.setItem("device_token", uuid)
       }
 
       const payload = {
@@ -129,7 +130,6 @@ export const userAuth = defineStore("userAuth", {
 
         console.log("Telegram verify response:", resp.data)
 
-        // ✅ Validate backend response
         const { token, user } = resp.data || {}
 
         if (!token || !user) {
@@ -141,15 +141,13 @@ export const userAuth = defineStore("userAuth", {
         this.setUser(user)
         this.isLoggedIn = true
 
-        // ✅ Redirect
-        const route = useRoute()
-        await navigateTo(route.query.next || "/")
+        // ✅ Safe redirect
+        const next = router.currentRoute.value.query.next || "/"
+        await navigateTo(next)
 
       } catch (err) {
         console.error("Telegram login failed:", err?.response?.data || err)
 
-        // SweetAlert error
-        const { default: Swal } = await import("sweetalert2")
         Swal.fire({
           title: "Login failed",
           text: err?.response?.data?.message || "Telegram authentication error",
