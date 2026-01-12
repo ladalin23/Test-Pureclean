@@ -92,69 +92,65 @@ export const userAuth = defineStore("userAuth", {
     },
 
     async loginWithTelegram(telegramUser) {
-      const { $AdminPublicAxios } = useNuxtApp()
+    const { $AdminPublicAxios } = useNuxtApp()
 
-      if (!$AdminPublicAxios) {
-        console.error("AdminPublicAxios not initialized")
-        return
+    if (!$AdminPublicAxios) {
+      console.error("AdminPublicAxios not initialized")
+      return
+    }
+
+    // ✅ Ensure device token (client only)
+    if (process.client && !localStorage.getItem("device_token")) {
+      const uuid =
+        crypto?.randomUUID?.() ??
+        Math.random().toString(36).substring(2)
+      localStorage.setItem("device_token", uuid)
+    }
+
+    const payload = {
+      id: telegramUser.id,
+      first_name: telegramUser.first_name ?? null,
+      last_name: telegramUser.last_name ?? null,
+      username: telegramUser.username ?? null,
+      photo_url: telegramUser.photo_url ?? null,
+      auth_date: telegramUser.auth_date,
+      hash: telegramUser.hash,
+      token: localStorage.getItem("device_token"),
+      platform: "web",
+    }
+
+    try {
+      const resp = await $AdminPublicAxios.post(
+        "/auth/telegram/verify",
+        payload
+      )
+
+      console.log("Telegram verify response:", resp.data)
+
+      const { token, user } = resp.data || {}
+
+      if (!token || !user) {
+        throw new Error("Invalid response from server")
       }
 
-      // ✅ Ensure device token (client only)
-      if (process.client && !localStorage.getItem("device_token")) {
-        const uuid =
-          crypto?.randomUUID?.() ??
-          Math.random().toString(36).substring(2)
-        localStorage.setItem("device_token", uuid)
-      }
+      // ✅ Save auth state
+      this.setToken(token)
+      this.setUser(user)
+      this.isLoggedIn = true
 
-      const payload = {
-        id: telegramUser.id,
-        first_name: telegramUser.first_name ?? null,
-        last_name: telegramUser.last_name ?? null,
-        username: telegramUser.username ?? null,
-        photo_url: telegramUser.photo_url ?? null,
-        auth_date: telegramUser.auth_date,
-        hash: telegramUser.hash,
-        token: localStorage.getItem("device_token"),
-        platform: "web",
-      }
+      navigateTo("/");
 
-      try {
-        console.log("Telegram verify response:", resp.payload)
-        const resp = await $AdminPublicAxios.post(
-          "/auth/telegram/verify",
-          payload
-        )
+    } catch (err) {
+      console.error("Telegram login failed:", err?.response?.data || err)
 
-        console.log("Telegram verify response:", resp.data)
-
-        const { token, user } = resp.data || {}
-
-        if (!token || !user) {
-          throw new Error("Invalid response from server")
-        }
-
-        // ✅ Save auth state
-        this.setToken(token)
-        this.setUser(user)
-        this.isLoggedIn = true
-
-        // ✅ Simply reload page or redirect to home
-        if (process.client) {
-          window.location.href = "/" // returns to home page
-        }
-
-      } catch (err) {
-        console.error("Telegram login failed:", err?.response)
-
-        Swal.fire({
-          title: "Login failed",
-          text: err?.response?.data?.message || "Telegram authentication error",
-          icon: "error",
-          timer: 2000,
-        })
-      }
-    },
+      Swal.fire({
+        title: "Login failed",
+        text: err?.response?.data?.message || "Telegram authentication error",
+        icon: "error",
+        timer: 2000,
+      })
+    }
+  },
 
     async login(email, password) {
       const { $AdminPublicAxios } = useNuxtApp();
