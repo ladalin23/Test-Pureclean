@@ -23,16 +23,16 @@
         </section>
 
         <!-- Telegram Login -->
-        <div class="d-flex justify-center hidden my-6">
-          <div id="telegram-login"></div>
+        <div class="d-flex justify-center my-6">
+          <TelegramLogin />
         </div>
 
         <!-- Manual Sign In -->
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                  rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="triggerTelegramLogin"
+                   rounded-full text-lg font-medium transition-colors shadow-md"
+            @click="goHome"
           >
             Sign In
           </button>
@@ -44,65 +44,11 @@
 </template>
 
 <script setup>
-import {onMounted} from "vue";
-import {userAuth} from "~/store/userAuth";
+import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
+const route = useRoute();
 
-let telegramButton = null;
-
-const botUsername = "testpurecleanbot"; // Telegram bot username
-const userAuthStore = userAuth();
-const {$swal} = useNuxtApp();
-const router = useRouter(); // Nuxt composable
-onMounted(() => {
-  const script = document.createElement("script");
-  script.src = "https://telegram.org/js/telegram-widget.js?22";
-  script.setAttribute("data-telegram-login", botUsername);
-  script.setAttribute("data-size", "large");
-  script.setAttribute("data-radius", "20");
-  script.setAttribute("data-onauth", "onTelegramAuth(user)");
-  script.setAttribute("data-request-access", "write");
-  document.getElementById("telegram-login").appendChild(script);
-  
-  setTimeout(() => {
-    telegramButton = document.querySelector(
-      "#telegram-login iframe"
-    );
-  }, 1000);
-});
-
-window.onTelegramAuth = async (user) => {
-  const username = user.username || user.first_name + user.last_name; // Fallback to first name if username is not available
-  const telegram_id = String(user.id); // Telegram user ID
-  console.log("Telegram user:", user);
-  const profile_picture = user.photo_url || "";
-  console.log("Profile picture URL:", profile_picture);
-  try {
-    console.log("User is:", user)
-    const authSrr = await userAuthStore.loginWithTelegram(user);
-  } catch (error) {
-    console.error("Login error:", error);
-    await $swal.fire({
-      title: 'Login or Signup failed',
-      text: 'Opps have something wrong. Let contact us!',
-      icon: 'error',
-      confirmButtonText: 'OK',
-      timer: 2000
-    });
-  }
-
+const goHome = () => {
+  window.location.href = route.query.next || "/";
 };
-
-
-function triggerTelegramLogin() {
-  if (telegramButton) {
-    telegramButton.contentWindow.postMessage(
-      { type: "login" },
-      "*"
-    );
-  } else {
-    console.error("Telegram button not ready yet");
-  }
-}
-
 </script>
