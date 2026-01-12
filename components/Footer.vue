@@ -8,22 +8,23 @@
       height="100"
       class="rounded-t-xl"
     >
-      <v-btn value="/" @click="handleNavigation('/')">
+      
+      <v-btn value="/" :to="'/'">
         <v-icon>mdi-home</v-icon>
         <span>Home</span>
       </v-btn>
 
-      <v-btn value="/qr-code" @click="handleNavigation('/qr-code')">
+      <v-btn value="/qr-code" :to="'/qr-code'">
         <v-icon>mdi-qrcode-scan</v-icon>
         <span>My QR</span>
       </v-btn>
 
-      <v-btn value="/rewards" @click="handleNavigation('/rewards')">
+      <v-btn value="/rewards" :to="'/rewards'">
         <v-icon>mdi-gift</v-icon>
         <span>Rewards</span>
       </v-btn>
 
-      <v-btn value="/profile" @click="handleNavigation('/profile')">
+      <v-btn value="/profile" :to="'/profile'">
         <v-icon>mdi-account</v-icon>
         <span>My Profile</span>
       </v-btn>
