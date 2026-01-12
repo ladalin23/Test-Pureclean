@@ -157,7 +157,7 @@ export const userAuth = defineStore("userAuth", {
           timer: 2000,
         })
       }
-    }
+    },
 
 
     async login(email, password) {
