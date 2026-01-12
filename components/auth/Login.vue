@@ -27,7 +27,7 @@
           <TelegramLogin />
         </div>
 
-        <!-- Manual Sign In -->
+        <!-- Manual Sign In Button -->
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
@@ -46,8 +46,9 @@
 <script setup>
 import TelegramLogin, { triggerTelegramLogin } from "~/components/auth/TelegramLogin.vue";
 
+// Custom function for your "Sign In" button
 const goHome = () => {
-  // Trigger Telegram login instead of redirect
+  // Trigger Telegram login when clicking the button
   triggerTelegramLogin();
 };
 </script>
