@@ -1,6 +1,6 @@
 <!-- components/AuthLogin.vue -->
 <template>
-  <<v-container fluid class="d-flex align-center justify-center">
+  <v-container fluid class="d-flex align-center justify-center">
     <!-- Background -->
     <img
       src="/images/Background/washing-machine-isolated.png"
@@ -27,6 +27,7 @@
         <div class="d-flex justify-center my-6">
           <TelegramLogin />
         </div>
+        
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
@@ -35,14 +36,18 @@
             Sign In
           </button>
         </section>
+
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-  import TelegramLogin from "~/components/auth/TelegramLogin.vue";
-  const route = useRoute();
-  const goHome = () => {
-    window.location.href = route.query.next || "/";
-  };
+import TelegramLogin from "~/components/auth/TelegramLogin.vue";
+const route = useRoute();
+const goHome = () => {
+  window.location.href = route.query.next || "/";
+};
 </script>
 
 <style scoped>
@@ -52,9 +57,8 @@
   border-radius: 14px;
 }
 
-/* Keep the area under fields stable even when alert toggles */
 .feedback-slot {
-  min-height: 48px; /* roughly one alert height; adjust 0–56px to taste */
+  min-height: 48px;
   display: grid;
   align-items: start;
 }
