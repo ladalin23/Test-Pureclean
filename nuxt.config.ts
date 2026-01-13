@@ -52,5 +52,11 @@ export default defineNuxtConfig({
   },
 
   compatibilityDate: '2025-02-12',
-  modules: ['@nuxtjs/tailwindcss'],
+  modules: ['@nuxtjs/tailwindcss', '@nuxtjs/color-mode'],
+  colorMode: {
+    preference: 'system',
+    fallback: 'light',
+    classSuffix: '',
+    storageKey: 'nuxt-color-mode'
+  }
 });
