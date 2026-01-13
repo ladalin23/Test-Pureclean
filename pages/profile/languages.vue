@@ -31,7 +31,7 @@
               <v-list-item-title
                 :class="selectedLanguage === lang.code ? 'font-weight-bold' : ''"
               >
-                {{ lang.title }}
+                {{ translate(lang.title) }}
               </v-list-item-title>
 
               <template v-slot:append>
@@ -64,8 +64,8 @@ const languageCookie = useCookie('lang');
 
 // Only English and Khmer
 const languages = [
-  { title: 'English', code: 'en', flag: 'https://flagcdn.com/w80/gb.png' },
-  { title: 'Khmer', code: 'km', flag: 'https://flagcdn.com/w80/kh.png' }
+  { title: 'english', code: 'en', flag: 'https://flagcdn.com/w80/gb.png' },
+  { title: 'khmer', code: 'km', flag: 'https://flagcdn.com/w80/kh.png' }
 ];
 
 // Reactive variable for UI highlight

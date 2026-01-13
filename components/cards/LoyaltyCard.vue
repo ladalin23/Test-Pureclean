@@ -1,6 +1,6 @@
 <template>
   <v-card
-    class="loyalty-background rounded-xl pa-2 sm:pa5 pa-md-10 text-white d-flex flex-column justify-space-between overflow-hidden card-container"
+    class="loyalty-background !rounded-[44px] pa-2 sm:pa5 pa-md-10 text-white d-flex flex-column justify-space-between overflow-hidden card-container"
     elevation="4"
   >
     <div class="text-center mb-0 sm:mb-2">
