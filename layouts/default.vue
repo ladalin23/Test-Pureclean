@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-main class="m-0" style="background-color: white;">
+    <v-main class="m-0 bg-[#FFFFFF] dark:bg-[#191919]"  >
       <transition name="fade" mode="out-in">
         <div :key="$route.fullPath" class="">
           <slot />
