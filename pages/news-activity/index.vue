@@ -1,12 +1,12 @@
 <template>
   <v-app>
-    <v-main class="bg-grey-lighten-4">
+    <v-main class="bg-[#FFFFFF] dark:bg-[#191919]">
       <v-container v-if="News" class="pa-4">
         <header class="d-flex justify-between mb-7 py-1 align-center ">
-            <nuxt-link to="/" >
+            <nuxt-link to="/" class="dark:text-[#FFFFFF]" >
                 <v-icon size="28">mdi-chevron-left</v-icon>
             </nuxt-link>
-            <p class="font-medium text-[20px] leading-[30px] tracking-normal">{{translate("news")}} & {{translate("activity")}}</p>
+            <p class="font-medium text-[20px] leading-[30px] tracking-normal dark:text-[#FFFFFF]">{{translate("news")}} & {{translate("activity")}}</p>
             <p></p>
         </header>
 

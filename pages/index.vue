@@ -1,13 +1,13 @@
 <template>
   <v-app>
-    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important;">
+    <v-main class="font-roboto bg-[#FFFFFF] dark:bg-[#191919]" style="color: #323232 !important;">
       <v-container class="pa-6">
         <!-- Main Content -->
         <div v-if="Banners.length > 0 && News.length > 0 && loyaltyCard.length > 0">
           <header class="d-flex justify-space-between align-center mb-6">
             <div class="d-flex align-center w-[140px] sm:w-[140px] md:w-[240px]">
               <v-img 
-                src="/logo/PurecleanLogo.png" 
+                :src="isDark ? '/logo/DarkPurecleanLogo.png' : '/logo/PurecleanLogo.png'" 
                 width="100%"
                 contain
                 class="flex-grow-0" />
@@ -17,13 +17,13 @@
                 icon
                 variant="text"
               >
-                <v-icon size="24" class="md:!text-[36px] sm:!text-[24px]">mdi-bell</v-icon>
+                <v-icon size="24" class="md:!text-[36px] sm:!text-[24px] dark:text-[#FFFFFF]">mdi-bell</v-icon>
               </v-btn>
           </header>
 
           <div class="mb-4">
-            <h2 class="font-medium text-[20px] md:text-[30px] xl:text-[30px]">{{translate("hello")}}, <span class="font-bold" style="text-transform: capitalize;">{{ currentUser?.username }}</span></h2>
-            <p class="font-normal text-[16px] md:text-[26px] xl:text-[26px]" >{{ translate("welcome_to_pureclean_laundry") }}</p>
+            <h2 class="font-medium text-[20px] md:text-[30px] xl:text-[30px] dark:text-[#FFFFFF]">{{translate("hello")}}, <span class="font-bold" style="text-transform: capitalize;">{{ currentUser?.username }}</span></h2>
+            <p class="font-normal text-[16px] md:text-[26px] xl:text-[26px] dark:text-[#FFFFFF]" >{{ translate("welcome_to_pureclean_laundry") }}</p>
           </div>
 
           <v-card class="rounded-xl mb-8 overflow-hidden" elevation="0">
@@ -46,7 +46,7 @@
           <!-- Loyalty Card Header -->
           <div class="mb-8" >
             <div class="mb-4 px-1 d-flex justify-space-between align-center">
-              <span class="font-medium text-[20px] md:text-[30px] xl:text-[30px] ">{{translate("loyaltycard")}}</span>
+              <span class="font-medium text-[20px] md:text-[30px] xl:text-[30px] dark:text-[#FFFFFF]">{{translate("loyaltycard")}}</span>
             </div>
             <CardsLoyaltyCard :loyaltyCard="loyaltyCard" />
           </div>
@@ -55,8 +55,8 @@
             <div class="w-full p-0">
               <!-- Header -->
               <div class="flex justify-between items-center px-1 mb-4">
-                <h2 class="text-[20px] md:text-[30px] font-medium">{{translate("news")}} & {{translate("activity")}}</h2>
-                <nuxt-link to="/news-activity" class="text-[14px] md:text-[24px] font-normal color-[#7F7F7F] no-underline" style="font">
+                <h2 class="text-[20px] md:text-[30px] font-medium dark:text-[#FFFFFF]">{{translate("news")}} & {{translate("activity")}}</h2>
+                <nuxt-link to="/news-activity" class="text-[14px] md:text-[24px] font-normal color-[#7F7F7F] dark:text-[#FFFFFF]  " style="font">
                   {{translate("see_more")}}
                 </nuxt-link>
               </div>
@@ -119,7 +119,7 @@
           <div class="mb-8" >
             <!-- Section Header -->
             <div class="px-1 mb-4">
-              <h2 class="text-[20px] md:text-[30px] font-medium">
+              <h2 class="text-[20px] md:text-[30px] font-medium dark:text-[#FFFFFF]">
                 {{translate("need_help_with_laundry")}}?
               </h2>
             </div>
@@ -186,7 +186,6 @@
           { image_url: "/images/Banner/Preparing_clothes.jpg" },
         ]
       }
-
       
     if (newsStore.news.length === 0) {
         newsStore.news = [
@@ -224,4 +223,24 @@
       router.push(`/news-activity/${id}`)
   }
 
+    // / --- Dark Mode ---
+    const colorMode = useColorMode()
+    const isDark = computed({
+        get() {
+            return colorMode.value === 'dark'
+        },
+        set(value) {
+            colorMode.preference = value ? 'dark' : 'light'
+            localStorage.setItem('dark', value ? 'true' : 'false')
+        }
+    })
+
+    onMounted(() => {
+        const saved = localStorage.getItem('dark')
+        if (saved === 'true') {
+            colorMode.preference = 'dark'
+        } else {
+            colorMode.preference = 'light'
+        }
+    })
 </script>

@@ -1,12 +1,12 @@
 <template>
-    <v-main class="d-flex align-center justify-center font-roboto" >
+    <v-main class="d-flex align-center justify-center font-roboto " >
       <v-container fluid class="fill-height d-flex flex-column align-center justify-center pa-6 pt-12">
         <div class="text-center mb-8 w-full text-[#323232]">
-            <h2 class="text-h6 font-medium mb-12 my-2">{{translate("my_profile")}}</h2>
+            <h2 class="text-h6 font-medium mb-12 my-2 dark:text-[#FFFFFF]">{{translate("my_profile")}}</h2>
             
-            <div class="position-relative d-inline-block rounded-full border-2 border-[#35667D]">
+            <div class="position-relative d-inline-block rounded-full border-2 border-[#35667D] dark:border-[#E6E6E6]">
                 <v-avatar size="100">
-                    <v-img :src="currentUser.profile_picture" alt="Srun Khyn" />
+                    <v-img :src="currentUser.profile_picture" :alt="currentUser.username" />
                 </v-avatar>
                 <v-btn
                     icon="mdi-pencil"
@@ -17,61 +17,68 @@
                 ></v-btn>
             </div>
             
-            <h3 class="mt-3 text-h6 font-medium" style="text-transform: capitalize !important;" >{{currentUser.username}}</h3>
+            <h3 class="mt-3 text-h6 font-medium dark:text-[#E6E6E6]" style="text-transform: capitalize !important;" >{{currentUser.username}}</h3>
         </div>
 
         <div class="w-full py-3 mb-[26px]">
-            <v-list class="!text-[#7F7F7F]">
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" :to="'/profile/user-information'" >
+            <v-list class="!text-[#7F7F7F] bg-transparent">
+                <v-list-item class="!bg-[#EAEFF2] dark:!bg-[#323232] rounded-lg mb-4" @click="handleLink('/profile/user-information')">
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-account" color="#7F7F7F" size="24" ></v-icon>
+                        <v-icon icon="mdi-account" :color="isDark ? '#FFFFFF' : '#7F7F7F'" size="24" ></v-icon>
                     </template>
-                    <v-list-item-title class="">{{ translate("user_information") }}</v-list-item-title>
+                    <v-list-item-title class="dark:text-[#FFFFFF]">{{ translate("user_information") }}</v-list-item-title>
                     <template v-slot:append>
-                        <v-icon icon="mdi-chevron-right" size="24"></v-icon>
+                        <v-icon icon="mdi-chevron-right" :color="isDark ? '#FFFFFF' : '#323232'" size="24"></v-icon>
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4" :to="'/profile/languages'" >
+                <v-list-item 
+                    class="!bg-[#EAEFF2] dark:!bg-[#323232] rounded-lg mb-4" @click="handleLink('/profile/languages')">
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-web"></v-icon>
+                        <v-icon icon="mdi-web" :color="isDark ? '#FFFFFF' : '#7F7F7F'" ></v-icon>
                     </template>
-                    <v-list-item-title>{{ translate("languages") }}</v-list-item-title>
+                    <v-list-item-title class="dark:text-[#FFFFFF]">{{ translate("languages") }}</v-list-item-title>
                     <template v-slot:append>
-                        <v-icon icon="mdi-chevron-right" size="24"></v-icon>
+                        <v-icon icon="mdi-chevron-right" :color="isDark ? '#FFFFFF' : '#323232'" size="24"></v-icon>
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg mb-4">
+                <v-list-item 
+                    class="!bg-[#EAEFF2] dark:!bg-[#323232] rounded-lg mb-4" >
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-white-balance-sunny"></v-icon>
+                    <v-icon icon="mdi-white-balance-sunny" :color="isDark ? '#FFFFFF' : '#7F7F7F'"></v-icon>
                     </template>
-                    <v-list-item-title>{{ translate("dark_mode") }}</v-list-item-title>
+
+                    <v-list-item-title class="dark:text-[#FFFFFF]">{{ translate("dark_mode") }}</v-list-item-title>
+
                     <template v-slot:append>
                         <label class="relative inline-flex items-center cursor-pointer">
                             <input 
-                                type="checkbox" 
-                                v-model="enabled" 
-                                class="sr-only peer"
+                            type="checkbox" 
+                            v-model="isDark" 
+                            class="sr-only peer"
                             >
                             <div class="w-12 h-6 bg-gray-400 rounded-full peer 
-                                        peer-checked:bg-blue-600 transition-colors duration-300">
-                            </div>
+                                        peer-checked:bg-blue-600 transition-colors duration-300
+                                        dark:bg-gray-700"> </div>
                             <div class="absolute left-[1px] top-[1px] w-[22px] h-[22px] bg-white rounded-full 
                                         transition-transform duration-300 
                                         peer-checked:translate-x-6">
                             </div>
+                            <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-300">
+                            </span>
                         </label>
                     </template>
                 </v-list-item>
 
-                <v-list-item class="!bg-[#EAEFF2] rounded-lg"  :to="'/profile/rate-service'">
+                <v-list-item 
+                    class="!bg-[#EAEFF2] dark:!bg-[#323232] rounded-lg" @click="handleLink('/profile/rate-service')">
                     <template v-slot:prepend>
-                        <v-icon icon="mdi-star-outline"></v-icon>
+                        <v-icon icon="mdi-star-outline" :color="isDark ? '#FFFFFF' : '#7F7F7F'"></v-icon>
                     </template>
-                    <v-list-item-title>{{ translate("rate_our_sevice") }}</v-list-item-title>
+                    <v-list-item-title class="dark:text-[#FFFFFF]">{{ translate("rate_our_sevice") }}</v-list-item-title>
                     <template v-slot:append>
-                        <v-icon icon="mdi-chevron-right" size="24"></v-icon>
+                        <v-icon icon="mdi-chevron-right" :color="isDark ? '#FFFFFF' : '#323232'" size="24"></v-icon>
                     </template>
                 </v-list-item>
             </v-list>
@@ -82,7 +89,7 @@
             color="error"
             block
             rounded="lg"
-            class="text-capitalize"
+            class="text-capitalize bg-[#FFFFFF] dark:bg-[#323232]"
             size="large"
             @click="openLogoutModal"
         >
@@ -180,6 +187,7 @@
     import { userAuth } from '~/store/userAuth';
     import { storeToRefs } from 'pinia'
     import { useNuxtApp } from '#app';
+    import { ref, watch, onMounted } from 'vue'
 
     const nuxtApp = useNuxtApp();
     const translate = nuxtApp.$translate as (key: string) => string;
@@ -223,6 +231,7 @@
         }
     };
 
+    
     const enabled = ref(false)
 
     // On mount, check saved preference
@@ -243,4 +252,27 @@
         }
             localStorage.setItem('dark', val)
     })
+
+
+    // --- Dark Mode ---
+    const colorMode = useColorMode()
+    const isDark = computed({
+        get() {
+            return colorMode.value === 'dark'
+        },
+        set(value) {
+            colorMode.preference = value ? 'dark' : 'light'
+            localStorage.setItem('dark', value ? 'true' : 'false')
+        }
+    })
+
+    onMounted(() => {
+        const saved = localStorage.getItem('dark')
+        if (saved === 'true') {
+            colorMode.preference = 'dark'
+        } else {
+            colorMode.preference = 'light'
+        }
+    })
+
 </script>

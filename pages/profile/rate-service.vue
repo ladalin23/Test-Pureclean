@@ -1,16 +1,16 @@
 <template>
   <v-app>
-    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important" >
+    <v-main class="bg-[#FFFFFF] dark:bg-[#191919] font-roboto" style="color: #323232 !important" >
       <v-container class="pa-6 pt-12 ">
         <header class="d-flex justify-between mb-12 py-1 align-center ">
             <nuxt-link to="/profile" >
-                <v-icon size="28">mdi-chevron-left</v-icon>
+                <v-icon size="28" class=" dark:text-[#FFFFFF]">mdi-chevron-left</v-icon>
             </nuxt-link>
-            <p class="font-medium text-[20px] leading-[30px] tracking-normal">{{translate("languages")}}</p>
+            <p class="font-medium text-[20px] leading-[30px] tracking-normal dark:text-[#FFFFFF]">{{translate("languages")}}</p>
             <p></p>
         </header>
         <div class="w-full mb-[26px]">
-            <h6 class="text-h6 font-medium px-0 mb-7">
+            <h6 class="text-h6 font-medium px-0 mb-7  dark:text-[#FFFFFF]">
                 {{translate("how_was_your_experience")}}?
             </h6>
             <div class="mb-6 w-full">
@@ -21,7 +21,7 @@
             </div>
 
             <div class="mb-6">
-                <label class="text-sm">{{translate("write_your_feedback")}}</label>
+                <label class="text-sm dark:text-[#FFFFFF]">{{translate("write_your_feedback")}}</label>
                 <v-textarea
                     v-model="message"
                     :placeholder="translate('add_your_comment')"
@@ -29,8 +29,7 @@
                     rounded="lg"
                     auto-grow
                     rows="5"
-                    color="primary"
-                    class="custom-textarea mt-3"
+                    class="custom-textarea mt-3 text-[#7F7F7F]"
                 ></v-textarea>
             </div>
 

@@ -1,10 +1,10 @@
 <template>
-  <v-app>
+  <v-app class="bg-[#FFFFFF] dark:bg-[#191919]">
     <v-app-bar flat color="transparent" class="px-6">
       <nuxt-link to="/news-activity" >
-        <v-icon size="28">mdi-chevron-left</v-icon>
+        <v-icon size="28" class="dark:text-[#FFFFFF]">mdi-chevron-left</v-icon>
       </nuxt-link>
-      <v-toolbar-title class="text-[20px] font-medium ml-n4 ps-6">
+      <v-toolbar-title class="text-[20px] dark:text-[#FFFFFF] font-medium ml-n4 ps-6">
         {{News.title}}
       </v-toolbar-title>
     </v-app-bar>
@@ -18,7 +18,7 @@
           class="rounded-xl mb-6"
         ></v-img>
 
-        <div class="text-body-1 text-grey-darken-3 line-height-lg px-2 text-justify">
+        <div class="text-body-1 text-[#323232] line-height-lg dark:text-[#FFFFFF] px-2 text-justify">
           {{News.content}}
         </div>
       </v-container>

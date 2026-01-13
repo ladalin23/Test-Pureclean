@@ -1,13 +1,13 @@
 <template>
   <v-app>
-    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important">
+    <v-main class="bg-[#FFFFFF] dark:bg-[#191919] font-roboto" style="color: #323232 !important">
       <v-container class="pa-6 pt-12">
         <!-- Header -->
         <header class="d-flex justify-between mb-12 py-1 align-center">
           <nuxt-link to="/profile">
-            <v-icon size="28">mdi-chevron-left</v-icon>
+            <v-icon size="28" class=" dark:text-[#FFFFFF]">mdi-chevron-left</v-icon>
           </nuxt-link>
-          <p class="font-medium text-[20px] leading-[30px] tracking-normal">
+          <p class="font-medium text-[20px] leading-[30px] tracking-normal dark:text-[#FFFFFF]">
             {{ translate('languages') }}
           </p>
           <p></p>
@@ -15,14 +15,14 @@
 
         <!-- Language List -->
         <div class="w-full mb-[26px]">
-          <v-list class="!text-[#7F7F7F]">
+          <v-list class="!text-[#7F7F7F] bg-transparent">
             <v-list-item
               v-for="lang in languages"
               :key="lang.code"
               @click="changeLanguage(lang.code)"
               rounded="lg"
-              class="mb-4 transition-all"
-              :class="selectedLanguage === lang.code ? '!bg-[#EAEFF2] !text-[#455A64]' : '!bg-transparent'"
+              class="mb-4 transition-all dark!bg-[#323232]"
+              :class="selectedLanguage === lang.code ? '!bg-[#EAEFF2] !text-[#35667D]' : '!bg-transparent dark:!bg-[#323232]  dark:text-[#FFFFFF]'"
             >
               <template v-slot:prepend>
                 <v-img :src="lang.flag" width="32" class="mr-4 rounded-sm" />

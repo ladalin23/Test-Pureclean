@@ -1,21 +1,21 @@
 <template>
   <v-app>
-    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important" >
+    <v-main class="bg-[#FFFFFF] dark:bg-[#191919] font-roboto" style="color: #323232 !important" >
         <div v-if="isLoading" class="flex justify-center items-center h-[80vh]">
             <v-progress-circular indeterminate color="primary" size="70"></v-progress-circular>
         </div>
         <v-container v-else class="pa-6 pt-12 ">
             <header class="d-flex justify-between mb-12 py-1 align-center ">
                 <nuxt-link to="/profile" >
-                    <v-icon size="28">mdi-chevron-left</v-icon>
+                    <v-icon size="28" class="dark:text-[#FFFFFF]">mdi-chevron-left</v-icon>
                 </nuxt-link>
-                <p class="font-medium text-[20px] leading-[30px] tracking-normal">{{translate("user_informations")}}</p>
+                <p class="font-medium text-[20px] leading-[30px] tracking-normal dark:text-[#FFFFFF]">{{translate("user_informations")}}</p>
                 <p></p>
             </header>
             <div class="text-center mb-8 w-full text-[#323232]">
                 <div class="position-relative d-inline-block rounded-full border-2 border-[#35667D]">
                     <v-avatar size="100">
-                        <v-img :src="currentUser.profile_picture" alt="Srun Khyn" />
+                        <v-img :src="currentUser.profile_picture" :alt="currentUser.username" />
                     </v-avatar>
                     <v-btn
                         icon="mdi-pencil"
@@ -31,19 +31,19 @@
             <v-container class="fill-height justify-center">
                 <v-form class="w-full">
                     <div class="Class	Value (rem)	Value (px)">
-                    <label class="text-sm mb-2  text-[#7F7F7F]">{{translate("username")}}</label>
+                    <label class="text-sm mb-2 text-[#7F7F7F] dark:text-[#FFFFFF]">{{translate("username")}}</label>
                     <v-text-field
                         v-model="userData.username"
                         variant="outlined"
                         density="comfortable"
-                        class="custom-field"
+                        class="custom-field dark:text-[#FFFFFF]"
                         :placeholder="translate('input_username')"
                         hide-details
                     ></v-text-field>
                     </div>
 
                     <div class="mt-5">
-                        <label class="text-sm mb-2 text-[#7F7F7F]">{{translate("gender")}}</label>
+                        <label class="text-sm mb-2 text-[#7F7F7F] dark:text-[#FFFFFF]">{{translate("gender")}}</label>
                         <v-select
                             v-model="userData.gender"
                             :items="genderOptions"
@@ -51,14 +51,14 @@
                             item-value="value"
                             variant="outlined"
                             density="comfortable"
-                            class="custom-field"
+                            class="custom-field dark:text-[#FFFFFF]"
                             :placeholder="translate('select_gender')"
                             hide-details
                         />
                     </div>
 
                     <div class="mt-5">
-                        <label class="text-sm mb-2 text-[#7F7F7F]">{{translate("dob")}}</label>
+                        <label class="text-sm mb-2 text-[#7F7F7F] dark:text-[#FFFFFF]">{{translate("dob")}}</label>
 
                         <v-menu
                             v-model="dobMenu"
@@ -72,7 +72,7 @@
                                 v-bind="props"
                                 variant="outlined"
                                 density="comfortable"
-                                class="custom-field"
+                                class="custom-field dark:text-[#FFFFFF]"
                                 :placeholder="translate('select_dob')"
                                 readonly
                                 hide-details
@@ -87,12 +87,12 @@
                     </div>
 
                     <div class="mt-1 mt-5">
-                        <label class="text-sm mb-2  text-[#7F7F7F]">{{translate("phone")}}</label>
+                        <label class="text-sm mb-2  text-[#7F7F7F] dark:text-[#FFFFFF]">{{translate("phone")}}</label>
                         <v-text-field
                             v-model="userData.phone"
                             variant="outlined"
                             density="comfortable"
-                            class="custom-field"
+                            class="custom-field dark:text-[#FFFFFF]"
                             :placeholder="translate('input_phone')"
                             hide-details
                         ></v-text-field>
@@ -116,6 +116,8 @@
 <script setup lang="ts">
     import { useUserStore } from '~/store/user'
     import { ref, computed, onMounted } from 'vue'
+    import { userAuth } from '~/store/userAuth';
+    import { storeToRefs } from 'pinia'
     import { useNuxtApp } from '#app';
 
     const nuxtApp = useNuxtApp();
@@ -123,6 +125,9 @@
     const userStore = useUserStore()
     const userData = ref([])
     const isLoading = ref(false) // you were using isLoading but not defined
+    const auth = userAuth()
+    const { user, isLoggedIn } = storeToRefs(auth)
+    const currentUser = computed(() => user.value || null)
 
 
     onMounted(async () => {

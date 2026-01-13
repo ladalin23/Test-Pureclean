@@ -1,15 +1,15 @@
 <template>
-  <v-app>
-    <v-app-bar flat border="bottom" class="px-6">
+  <v-app class="bg-[#FFFFFF] dark:bg-[#191919]">
+    <v-app-bar flat color="transparent" border="bottom" class="px-6 ">
       <nuxt-link to="/" >
-        <v-icon color="grey-darken-4" size="28">mdi-chevron-left</v-icon>
+        <v-icon class="dark:text-[#FFFFFF]" size="28">mdi-chevron-left</v-icon>
       </nuxt-link>
-      <v-toolbar-title class="text-h6 font-medium ml-n4 ps-6 " style="text-transform: capitalize !important;" >
+      <v-toolbar-title class="text-h6 font-medium ml-n4 ps-6 dark:text-[#FFFFFF]" style="text-transform: capitalize !important;" >
         {{translate(MainTitle)}}
       </v-toolbar-title>
     </v-app-bar>
 
-    <v-main class="bg-white">
+    <v-main>
       <v-container class="pa-6">
         <div 
           v-for="(guid, i) in guids" 
@@ -28,10 +28,10 @@
             </v-col>
 
             <v-col class="ps-4">
-              <div class="font-kantumruy mb-1 font-semibold text-[#35667D]" >
+              <div class="font-kantumruy mb-1 font-semibold text-[#35667D] dark:text-[#FFFFFF]" >
                 {{ guid.title.split("||")[1] }}
               </div>
-              <div class="text-body-2 font-semibold">
+              <div class="text-body-2 font-semibold dark:text-[#FFFFFF]">
                 {{ guid.title.split("||")[0] }}
               </div>
             </v-col>
@@ -60,6 +60,7 @@
   import { useRouter, useRoute } from 'vue-router'
   import { useNuxtApp } from '#app'
   import { useGuideStore } from '~/store/guide'
+    
 
   const nuxtApp = useNuxtApp()
   const translate = nuxtApp.$translate as (key: string) => string
@@ -73,6 +74,7 @@
   const guideStore = useGuideStore()
   const isLoading = ref(true)
 
+      
   // guidDetail fallback data
   const guidDetail = {
     washing: [
