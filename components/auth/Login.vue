@@ -7,6 +7,7 @@
       class="w-full h-full object-cover opacity-90 absolute top-0 z-0"
       alt=""
     /> 
+
     <v-row
       justify="center"
       class="w-full absolute top-0 z-10 h-full
@@ -20,14 +21,17 @@
             Hours Doing Laundry?
           </h1>
         </section>
-        <!-- Telegram Login -->
-        <div class="d-flex justify-center my-6">
-          <TelegramLogin /> 
-        </div>
+
+        <!-- Telegram Login Widget (hidden, will mount but not visible) -->
+        <div id="telegram-login" class="hidden"></div>
+
+        <!-- Custom Sign In Button -->
         <section class="absolute bottom-[47px] left-0 w-full px-6">
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                    rounded-full text-lg font-medium transition-colors shadow-md" @click="loginWithTelegram">
+                    rounded-full text-lg font-medium transition-colors shadow-md"
+            @click="openTelegramLogin"
+          >
             Sign In
           </button>
         </section>
@@ -37,15 +41,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import {onMounted} from "vue";
-import {userAuth} from "~/store/userAuth";
+import { onMounted } from "vue";
+import { userAuth } from "~/store/userAuth";
 
-
-const botUsername = "testpurecleanbot"; // Telegram bot username
+const botUsername = "testpurecleanbot";
 const userAuthStore = userAuth();
 const {$swal} = useNuxtApp();
-const router = useRouter(); // Nuxt composable
+const router = useRouter();
+
 onMounted(() => {
   const script = document.createElement("script");
   script.src = "https://telegram.org/js/telegram-widget.js?22";
@@ -58,28 +61,28 @@ onMounted(() => {
 });
 
 window.onTelegramAuth = async (user) => {
-  const username = user.username || user.first_name + user.last_name; // Fallback to first name if username is not available
-  const telegram_id = String(user.id); // Telegram user ID
-  console.log("Telegram user:", user);
+  const username = user.username || `${user.first_name} ${user.last_name || ""}`;
+  const telegram_id = String(user.id);
   const profile_picture = user.photo_url || "";
-  console.log("Profile picture URL:", profile_picture);
+
+  console.log("Telegram user:", user);
+
   try {
     await userAuthStore.loginWithTelegram(user);
   } catch (error) {
     console.error("Login error:", error);
     await $swal.fire({
       title: 'Login or Signup failed',
-      text: 'Opps have something wrong. Let contact us!',
+      text: 'Oops, something went wrong. Please contact us!',
       icon: 'error',
       confirmButtonText: 'OK',
       timer: 2000
     });
   }
-
 };
 
-const loginWithTelegram = () => {
-  const iframe = document.querySelector("#telegram-login iframe");
-  iframe?.click();
+// Open the Telegram login page in a new tab as fallback
+const openTelegramLogin = () => {
+  window.open(`https://t.me/${botUsername}?start=login`, "_blank");
 };
 </script>
