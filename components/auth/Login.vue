@@ -25,9 +25,9 @@
           <TelegramLogin /> 
         </div>
         <section class="absolute bottom-[47px] left-0 w-full px-6">
-          <button id="telegram-login"
+          <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                    rounded-full text-lg font-medium transition-colors shadow-md" onclick="return TWidgetLogin.auth();">
+                    rounded-full text-lg font-medium transition-colors shadow-md" @click="loginWithTelegram">
             Sign In
           </button>
         </section>
@@ -40,6 +40,7 @@
 import { ref } from "vue";
 import {onMounted} from "vue";
 import {userAuth} from "~/store/userAuth";
+
 
 const botUsername = "testpurecleanbot"; // Telegram bot username
 const userAuthStore = userAuth();
@@ -77,9 +78,8 @@ window.onTelegramAuth = async (user) => {
 
 };
 
-const telegramRef = ref(null);
-const route = useRoute();
-const goHome = () => {
-  window.location.href = route.query.next || "/";
+const loginWithTelegram = () => {
+  const iframe = document.querySelector("#telegram-login iframe");
+  iframe?.click();
 };
 </script>
