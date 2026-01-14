@@ -24,7 +24,7 @@
 
 
         <!-- Sign In Button -->
-        <section class="absolute bottom-[47px] left-0 w-full px-6">
+        <section class="w-full absolute bottom-[47px] left-0 w-full px-6">
           <div class="mx-auto">
             <TelegramLogin />
           </div>
