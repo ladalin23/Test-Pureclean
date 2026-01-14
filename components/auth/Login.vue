@@ -24,7 +24,12 @@
         <div class="d-flex justify-center my-6">
           <TelegramLogin /> 
         </div>
-        <section class="absolute bottom-[47px] left-0 w-full px-6" id="telegram-login">
+        <section class="absolute bottom-[47px] left-0 w-full px-6">
+          <button id="telegram-login"
+            class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
+                    rounded-full text-lg font-medium transition-colors shadow-md" onclick="return TWidgetLogin.auth();">
+            Sign In
+          </button>
         </section>
       </v-col>
     </v-row>
@@ -78,22 +83,3 @@ const goHome = () => {
   window.location.href = route.query.next || "/";
 };
 </script>
-
-<style scoped>
-  
-.tgme_widget_login_button {
-  width: 100% !important;
-  height: 56px !important;
-  border-radius: 9999px !important;
-  background: #3E6B7E !important;
-  color: white !important;
-  font-size: 18px !important;
-  font-weight: 500 !important;
-  box-shadow: 0 4px 10px rgba(0,0,0,.15);
-}
-
-/* Remove Telegram icon if you want */
-.tgme_widget_login_button_icon {
-  display: none !important;
-}
-</style>
