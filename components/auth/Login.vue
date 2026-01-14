@@ -37,6 +37,7 @@ import { ref } from "vue";
 import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
 const telegramRef = ref(null);
+
 const signInWithTelegram = () => {
   telegramRef.value?.triggerLogin();
 };

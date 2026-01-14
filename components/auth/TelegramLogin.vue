@@ -1,54 +1,50 @@
 <template>
+  <!-- Hidden Telegram widget -->
   <div ref="tgRoot" class="hidden"></div>
 </template>
 
 <script setup>
-import {onMounted} from "vue";
-import {userAuth} from "~/store/userAuth";
+import { onMounted, ref } from "vue";
+import { userAuth } from "~/store/userAuth";
 
-const botUsername = "testpurecleanbot"; // Telegram bot username
+const tgRoot = ref(null);
+const botUsername = "testpurecleanbot";
 const userAuthStore = userAuth();
-const {$swal} = useNuxtApp();
-const router = useRouter(); // Nuxt composable
+const { $swal } = useNuxtApp();
+
 onMounted(() => {
   const script = document.createElement("script");
   script.src = "https://telegram.org/js/telegram-widget.js?22";
+  script.async = true;
   script.setAttribute("data-telegram-login", botUsername);
   script.setAttribute("data-size", "large");
   script.setAttribute("data-radius", "20");
   script.setAttribute("data-onauth", "onTelegramAuth(user)");
   script.setAttribute("data-request-access", "write");
-  document.getElementById("telegram-login").appendChild(script);
+
+  tgRoot.value.appendChild(script);
 });
 
+// MUST be global
 window.onTelegramAuth = async (user) => {
-  const username = user.username || user.first_name + user.last_name; // Fallback to first name if username is not available
-  const telegram_id = String(user.id); // Telegram user ID
-  console.log("Telegram user:", user);
-  const profile_picture = user.photo_url || "";
-  console.log("Profile picture URL:", profile_picture);
   try {
     await userAuthStore.loginWithTelegram(user);
   } catch (error) {
-    console.error("Login error:", error);
     await $swal.fire({
-      title: 'Login or Signup failed',
-      text: 'Opps have something wrong. Let contact us!',
-      icon: 'error',
-      confirmButtonText: 'OK',
-      timer: 2000
+      title: "Login failed",
+      text: "Something went wrong",
+      icon: "error",
+      timer: 2000,
     });
   }
 };
 
-
-// expose function to parent
+// Expose click trigger
 defineExpose({
   triggerLogin() {
-    const iframe = tgRoot.value.querySelector("iframe");
+    const iframe = tgRoot.value?.querySelector("iframe");
     if (iframe) {
-      iframe.contentWindow.postMessage("login", "*");
-      iframe.click(); // fallback
+      iframe.click(); // ✅ only allowed action
     }
   },
 });
