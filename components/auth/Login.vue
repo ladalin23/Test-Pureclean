@@ -78,3 +78,22 @@ const goHome = () => {
   window.location.href = route.query.next || "/";
 };
 </script>
+
+<style scoped>
+  
+.tgme_widget_login_button {
+  width: 100% !important;
+  height: 56px !important;
+  border-radius: 9999px !important;
+  background: #3E6B7E !important;
+  color: white !important;
+  font-size: 18px !important;
+  font-weight: 500 !important;
+  box-shadow: 0 4px 10px rgba(0,0,0,.15);
+}
+
+/* Remove Telegram icon if you want */
+.tgme_widget_login_button_icon {
+  display: none !important;
+}
+</style>
