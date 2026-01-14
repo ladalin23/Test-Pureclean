@@ -1,3 +1,4 @@
+<!-- components/AuthLogin.vue -->
 <template>
   <v-container fluid class="d-flex align-center justify-center">
     <!-- Background -->
@@ -5,7 +6,7 @@
       src="/images/Background/washing-machine-isolated.png"
       class="w-full h-full object-cover opacity-90 absolute top-0 z-0"
       alt=""
-    />
+    /> 
 
     <v-row
       justify="center"
@@ -21,47 +22,40 @@
           </h1>
         </section>
 
-        <!-- Telegram Login Widget (default button) -->
-        <div class="d-flex justify-center my-6">
-          <div id="telegram-login"></div>
-        </div>
+
+        <!-- Sign In Button -->
+        <section class="absolute bottom-[47px] left-0 w-full px-6">
+          <button
+            class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
+                    rounded-full text-lg font-medium transition-colors shadow-md"
+            @click="showModal = true"
+          >
+            Sign In
+          </button>
+        </section>
       </v-col>
     </v-row>
+
+    <!-- Modal -->
+    <div
+      v-if="showModal" @click="showModal = false"
+      class="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-50"
+    >
+      <div class="bg-white rounded-xl p-6 w-[90%] max-w-md relative items-center justify-center">
+          <TelegramLogin /> 
+      </div>
+    </div>
   </v-container>
 </template>
 
 <script setup>
-import { onMounted } from "vue";
-import { userAuth } from "~/store/userAuth";
+import { ref } from "vue"; // ← required
+import TelegramLogin from "~/components/auth/TelegramLogin.vue";
 
-const botUsername = "testpurecleanbot";
-const userAuthStore = userAuth();
-const {$swal} = useNuxtApp();
+const showModal = ref(false); // reactive variable for modal
+const route = useRoute();
 
-onMounted(() => {
-  const script = document.createElement("script");
-  script.src = "https://telegram.org/js/telegram-widget.js?22";
-  script.setAttribute("data-telegram-login", botUsername);
-  script.setAttribute("data-size", "large");
-  script.setAttribute("data-radius", "20");
-  script.setAttribute("data-onauth", "onTelegramAuth(user)");
-  script.setAttribute("data-request-access", "write");
-  document.getElementById("telegram-login").appendChild(script);
-});
-
-// This function runs when user logs in via Telegram
-window.onTelegramAuth = async (user) => {
-  try {
-    await userAuthStore.loginWithTelegram(user);
-  } catch (error) {
-    console.error("Login error:", error);
-    await $swal.fire({
-      title: "Login failed",
-      text: "Something went wrong. Please try again!",
-      icon: "error",
-      confirmButtonText: "OK",
-      timer: 2000
-    });
-  }
+const goHome = () => {
+  window.location.href = route.query.next || "/";
 };
 </script>
