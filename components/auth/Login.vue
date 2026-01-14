@@ -45,7 +45,7 @@
     >
       <!-- Modal content -->
       <div
-        class="bg-white/80 backdrop-blur-md rounded-xl p-8 w-[90%] max-w-md flex flex-col items-center justify-center"
+        class="bg-white/80 backdrop-blur-md rounded-xl py-8 w-[90%] max-w-md flex flex-col items-center justify-center"
         @click.stop
       >
         <h2 class="text-2xl font-bold mb-6 text-center">Sign In with Telegram</h2>
