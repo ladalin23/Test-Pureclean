@@ -1,4 +1,3 @@
-<!-- components/AuthLogin.vue -->
 <template>
   <v-container fluid class="d-flex align-center justify-center">
     <!-- Background -->
@@ -6,7 +5,8 @@
       src="/images/Background/washing-machine-isolated.png"
       class="w-full h-full object-cover opacity-90 absolute top-0 z-0"
       alt=""
-    /> 
+    />
+
     <v-row
       justify="center"
       class="w-full absolute top-0 z-10 h-full
@@ -20,27 +20,48 @@
             Hours Doing Laundry?
           </h1>
         </section>
-        <!-- Telegram Login -->
-        <div class="w-100 d-flex justify-center my-6">
-          <TelegramLogin /> 
+
+        <!-- Telegram Login Widget (default button) -->
+        <div class="d-flex justify-center my-6">
+          <div id="telegram-login"></div>
         </div>
-        <section class="absolute bottom-[47px] left-0 w-full px-6">
-          <button
-            class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                    rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="goHome">
-            Sign In
-          </button>
-        </section>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script setup>
-import TelegramLogin from "~/components/auth/TelegramLogin.vue";
-const route = useRoute();
-const goHome = () => {
-  window.location.href = route.query.next || "/";
+import { onMounted } from "vue";
+import { userAuth } from "~/store/userAuth";
+
+const botUsername = "testpurecleanbot";
+const userAuthStore = userAuth();
+const {$swal} = useNuxtApp();
+
+onMounted(() => {
+  const script = document.createElement("script");
+  script.src = "https://telegram.org/js/telegram-widget.js?22";
+  script.setAttribute("data-telegram-login", botUsername);
+  script.setAttribute("data-size", "large");
+  script.setAttribute("data-radius", "20");
+  script.setAttribute("data-onauth", "onTelegramAuth(user)");
+  script.setAttribute("data-request-access", "write");
+  document.getElementById("telegram-login").appendChild(script);
+});
+
+// This function runs when user logs in via Telegram
+window.onTelegramAuth = async (user) => {
+  try {
+    await userAuthStore.loginWithTelegram(user);
+  } catch (error) {
+    console.error("Login error:", error);
+    await $swal.fire({
+      title: "Login failed",
+      text: "Something went wrong. Please try again!",
+      icon: "error",
+      confirmButtonText: "OK",
+      timer: 2000
+    });
+  }
 };
 </script>
