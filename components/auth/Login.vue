@@ -38,11 +38,19 @@
 
     <!-- Modal -->
     <div
-      v-if="showModal" @click="showModal = false"
-      class="fixed inset-0 z-50 flex items-center justify-center bg-transparent bg-opacity-50"
+      v-if="showModal"
+      @click="showModal = false"
+      class="fixed inset-0 z-50 flex items-center justify-center
+            bg-black/30 backdrop-blur-sm" 
     >
-      <div class="bg-white rounded-xl p-6 w-[90%] max-w-md relative items-center justify-center">
-          <TelegramLogin /> 
+      <!-- Modal content -->
+      <div
+        class="bg-white/80 backdrop-blur-md rounded-xl p-8 w-[90%] max-w-md flex flex-col items-center justify-center"
+        @click.stop
+      >
+        <h2 class="text-2xl font-bold mb-6 text-center">Sign In with Telegram</h2>
+        <div class="mx-auto"><TelegramLogin /></div>
+        
       </div>
     </div>
   </v-container>
