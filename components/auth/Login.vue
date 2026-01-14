@@ -25,36 +25,10 @@
 
         <!-- Sign In Button -->
         <section class="absolute bottom-[47px] left-0 w-full px-6">
-          <button
-            class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
-                    rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="showModal = true"
-          >
-            Sign In
-          </button>
+          <TelegramLogin />
         </section>
       </v-col>
     </v-row>
-
-    <!-- Modal -->
-    <div
-      v-if="showModal"
-      @click="showModal = false"
-      class="fixed inset-0 z-50 flex items-center justify-center
-            bg-black/30 backdrop-blur-sm" 
-    >
-      <!-- Modal content -->
-      <div
-        class="bg-white/80 backdrop-blur-md rounded-xl py-8 w-[90%] max-w-md flex flex-col items-center justify-center"
-        @click.stop
-      >
-        <h2 class="text-2xl font-bold mb-6 text-center">Sign In with Telegram</h2>
-        <div class="mx-auto">
-          <TelegramLogin />
-        </div>
-        
-      </div>
-    </div>
   </v-container>
 </template>
 
