@@ -1,5 +1,5 @@
 <template>
-  <div id="telegram-login"></div>
+  <div ref="tgRoot" class="hidden"></div>
 </template>
 
 <script setup>
@@ -39,6 +39,17 @@ window.onTelegramAuth = async (user) => {
       timer: 2000
     });
   }
-
 };
+
+
+// expose function to parent
+defineExpose({
+  triggerLogin() {
+    const iframe = tgRoot.value.querySelector("iframe");
+    if (iframe) {
+      iframe.contentWindow.postMessage("login", "*");
+      iframe.click(); // fallback
+    }
+  },
+});
 </script>
