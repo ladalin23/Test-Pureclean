@@ -1,129 +1,46 @@
 <!-- components/AuthLogin.vue -->
 <template>
-  <v-card class="login-card mx-auto" elevation="8">
-    <v-card-title class="d-flex text-h6 font-semibold justify-center py-4">
-      Welcome back
-    </v-card-title>
-
-    <v-divider />
-
-    <v-card-text class="pt-6">
-      <v-form ref="formRef" v-model="isValid" @submit.prevent="onSubmit">
-        <div class="pb-2">
-          <v-text-field
-            v-model="email"
-            label="Email"
-            type="email"
-            autocomplete="email"
-            variant="outlined"
-            :rules="emailRules"
-            prepend-inner-icon="mdi-email-outline"
-            :hide-details="false"
-            hint="botumsakor@gmail.com"
-            required
-          />
+  <v-container fluid class="d-flex align-center justify-center">
+    <!-- Background -->
+    <img
+      src="/images/Background/washing-machine-isolated.png"
+      class="w-full h-full object-cover opacity-90 absolute top-0 z-0"
+      alt=""
+    /> 
+    <v-row
+      justify="center"
+      class="w-full absolute top-0 z-10 h-full
+        bg-[linear-gradient(180deg,rgba(255,255,255,0.9)_0%,rgba(241,245,247,0.2)_60%,rgba(230,235,238,0.1)_100%)]"
+    >
+      <v-col cols="12" class="relative">
+        <!-- Header -->
+        <section class="px-6 mt-[157px]">
+          <h1 class="text-[32px] font-bold leading-tight text-[#2D5467] tracking-tight">
+            Tired of Spending<br />
+            Hours Doing Laundry?
+          </h1>
+        </section>
+        <!-- Telegram Login -->
+        <div class="d-flex justify-center my-6">
+          <TelegramLogin /> 
         </div>
-
-        <div>
-          <v-text-field
-            v-model="password"
-            :type="showPass ? 'text' : 'password'"
-            label="Password"
-            autocomplete="current-password"
-            variant="outlined"
-            :rules="passwordRules"
-            prepend-inner-icon="mdi-lock-outline"
-            :append-inner-icon="showPass ? 'mdi-eye-off-outline' : 'mdi-eye-outline'"
-            @click:append-inner="showPass = !showPass"
-            :hide-details="false"
-            hint="At least 6 characters"
-            required
-          />
-        </div>
-
-        <!-- Reserve space for alert so button doesn't jump -->
-        <div class="feedback-slot">
-          <v-alert
-            v-if="errorMessage"
-            type="error"
-            variant="tonal"
-            density="comfortable"
-          >
-            {{ errorMessage }}
-          </v-alert>
-        </div>
-
-        <v-btn
-          type="submit"
-          color="primary"
-          block
-          class="mt-4"
-          size="x-large"
-          :loading="loading"
-          :disabled="loading || !isValid"
-        >
-          Sign in
-        </v-btn>
-      </v-form>
-    </v-card-text>
-  </v-card>
+        <section class="absolute bottom-[47px] left-0 w-full px-6">
+          <button
+            class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
+                    rounded-full text-lg font-medium transition-colors shadow-md"
+            @click="goHome">
+            Sign In
+          </button>
+        </section>
+      </v-col>
+    </v-row>
+  </v-container>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { userAuth } from '~/store/userAuth'
-import { useRouter } from 'vue-router'
-
-const router = useRouter()
-const auth = userAuth()
-
-const formRef = ref(null)
-const isValid = ref(false)
-const email = ref('')
-const password = ref('')
-const showPass = ref(false)
-const loading = ref(false)
-const errorMessage = ref('')
-
-const emailRules = [
-  v => !!v || 'Email is required',
-  v => /^\S+@\S+\.\S+$/.test(v) || 'Enter a valid email',
-]
-const passwordRules = [
-  v => !!v || 'Password is required',
-  v => (v && v.length >= 6) || 'At least 6 characters',
-]
-
-async function onSubmit () {
-  errorMessage.value = ''
-  const { valid } = await formRef.value?.validate()
-  if (!valid) return
-
-  loading.value = true
-  try {
-    await auth.login(email.value, password.value)
-    // await auth.initializeSession?.()
-    router.push(auth.redirectTo || '/')
-  } catch (err) {
-    errorMessage.value =
-      err?.response?.data?.message || err?.message || 'Login failed. Please check your email and password.'
-  } finally {
-    loading.value = false
-  }
-}
+import TelegramLogin from "~/components/auth/TelegramLogin.vue";
+const route = useRoute();
+const goHome = () => {
+  window.location.href = route.query.next || "/";
+};
 </script>
-
-<style scoped>
-.login-card {
-  width: 100%;
-  max-width: 420px;
-  border-radius: 14px;
-}
-
-/* Keep the area under fields stable even when alert toggles */
-.feedback-slot {
-  min-height: 48px; /* roughly one alert height; adjust 0–56px to taste */
-  display: grid;
-  align-items: start;
-}
-</style>
