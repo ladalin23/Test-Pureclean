@@ -16,6 +16,7 @@ onMounted(() => {
   script.setAttribute("data-telegram-login", botUsername);
   script.setAttribute("data-size", "large");
   script.setAttribute("data-radius", "20");
+  script.setAttribute("data-userpic", "false");
   script.setAttribute("data-onauth", "onTelegramAuth(user)");
   script.setAttribute("data-request-access", "write");
   document.getElementById("telegram-login").appendChild(script);
