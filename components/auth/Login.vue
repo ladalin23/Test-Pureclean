@@ -23,7 +23,7 @@
         </section>
 
         <!-- Telegram Login Widget (hidden, will mount but not visible) -->
-        <div id="telegram-login" class="hidden"></div>
+        <div id="telegram-login"></div>
 
         <!-- Custom Sign In Button -->
         <section class="absolute bottom-[47px] left-0 w-full px-6">
