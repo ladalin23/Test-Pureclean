@@ -6,7 +6,7 @@
 import {onMounted} from "vue";
 import {userAuth} from "~/store/userAuth";
 
-const botUsername = "testpurecleanbot"; // Telegram bot username
+const botUsername = "purecleanv2bot"; // Telegram bot username
 const userAuthStore = userAuth();
 const {$swal} = useNuxtApp();
 const router = useRouter(); // Nuxt composable
