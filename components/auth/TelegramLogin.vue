@@ -3,44 +3,43 @@
 </template>
 
 <script setup>
-import { onMounted } from "vue";
+import {onMounted} from "vue";
+import {userAuth} from "~/store/userAuth";
 
+const botUsername = "testpurecleanbot"; // Telegram bot username
+const userAuthStore = userAuth();
+const {$swal} = useNuxtApp();
+const router = useRouter(); // Nuxt composable
 onMounted(() => {
-  // Ensure runs only on client
-  if (typeof window === "undefined") return;
-
-  // Telegram callback MUST be global
-  window.onTelegramAuth = (user) => {
-    console.log("Telegram user:", user);
-    /*
-      user = {
-        id,
-        first_name,
-        last_name,
-        username,
-        photo_url,
-        auth_date,
-        hash
-      }
-    */
-  };
-
-  const container = document.getElementById("telegram-login");
-  if (!container) return;
-
-  // Prevent duplicate buttons
-  container.innerHTML = "";
-
   const script = document.createElement("script");
   script.src = "https://telegram.org/js/telegram-widget.js?22";
-  script.async = true;
-
-  script.setAttribute("data-telegram-login", "testpurecleanbot");
-  script.setAttribute("data-size", "large"); // small | medium | large
+  script.setAttribute("data-telegram-login", botUsername);
+  script.setAttribute("data-size", "large");
   script.setAttribute("data-radius", "20");
+  script.setAttribute("data-userpic", "false");
   script.setAttribute("data-onauth", "onTelegramAuth(user)");
   script.setAttribute("data-request-access", "write");
-
-  container.appendChild(script);
+  document.getElementById("telegram-login").appendChild(script);
 });
+
+window.onTelegramAuth = async (user) => {
+  const username = user.username || user.first_name + user.last_name; // Fallback to first name if username is not available
+  const telegram_id = String(user.id); // Telegram user ID
+  console.log("Telegram user:", user);
+  const profile_picture = user.photo_url || "";
+  console.log("Profile picture URL:", profile_picture);
+  try {
+    await userAuthStore.loginWithTelegram(user);
+  } catch (error) {
+    console.error("Login error:", error);
+    await $swal.fire({
+      title: 'Login or Signup failed',
+      text: 'Opps have something wrong. Let contact us!',
+      icon: 'error',
+      confirmButtonText: 'OK',
+      timer: 2000
+    });
+  }
+
+};
 </script>
