@@ -49,7 +49,9 @@
         @click.stop
       >
         <h2 class="text-2xl font-bold mb-6 text-center">Sign In with Telegram</h2>
-        <div class="mx-auto"><TelegramLogin /></div>
+        <div class="mx-auto">
+          <TelegramLogin />
+        </div>
         
       </div>
     </div>
