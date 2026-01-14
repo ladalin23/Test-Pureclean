@@ -21,7 +21,7 @@
           </h1>
         </section>
         <!-- Telegram Login -->
-        <div class="d-flex justify-center my-6">
+        <div class="w-100 d-flex justify-center my-6">
           <TelegramLogin /> 
         </div>
         <section class="absolute bottom-[47px] left-0 w-full px-6">
