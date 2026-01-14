@@ -30,7 +30,7 @@
           <button
             class="w-full bg-[#3E6B7E] hover:bg-[#325868] text-white py-4
                     rounded-full text-lg font-medium transition-colors shadow-md"
-            @click="openTelegramLogin"
+            @click="loginWithTelegram"
           >
             Sign In
           </button>
@@ -48,6 +48,8 @@ const botUsername = "testpurecleanbot";
 const userAuthStore = userAuth();
 const {$swal} = useNuxtApp();
 const router = useRouter();
+
+
 
 onMounted(() => {
   const script = document.createElement("script");
@@ -82,7 +84,14 @@ window.onTelegramAuth = async (user) => {
 };
 
 // Open the Telegram login page in a new tab as fallback
-const openTelegramLogin = () => {
-  window.open(`https://t.me/${botUsername}?start=login`, "_blank");
+const loginWithTelegram = () => {
+  // Wait for the Telegram widget iframe/button to be rendered
+  const telegramButton = document.querySelector(".tgme_widget_login_button");
+
+  if (telegramButton) {
+    telegramButton.click(); // Simulate user click
+  } else {
+    console.warn("Telegram widget button not yet loaded.");
+  }
 };
 </script>
