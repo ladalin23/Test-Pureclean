@@ -1,5 +1,5 @@
 <template>
-    <v-main class="d-flex align-center justify-center font-roboto h-[89vh] sm:h-[87vh]">
+    <v-main class="d-flex align-center justify-center font-roboto h-[89vh] sm:h-[87vh] relative">
     <img :src="isDark ? '/images/Background/QR_Code_Dark.png' :'/images/Background/QR_Code.png'" alt="" class="w-full h-full object-cover opacity-90 absolute bottom-0 z-0">
     <v-container fluid class="fill-height z-10 qr-payment-bg align-center justify-center text-white pa-6 mt-[90px] sm:mt-[120px]">
       <div class="text-center mb-5">
