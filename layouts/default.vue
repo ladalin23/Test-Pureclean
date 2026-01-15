@@ -1,8 +1,8 @@
 <template>
   <v-app>
-    <v-main class="m-0 bg-[#FFFFFF] dark:bg-[#191919]"  >
+    <v-main class="m-0 bg-[#FFFFFF] dark:bg-[#191919] flex justify-center">
       <transition name="fade" mode="out-in">
-        <div :key="$route.fullPath" class="">
+        <div :key="$route.fullPath" class="w-[550px]">
           <slot />
         </div>
       </transition>
@@ -25,5 +25,5 @@ const hideFooter = computed(
         route.path.startsWith('/locations') || 
         route.path === '/news-activity' || 
         route.path === '/order');
-
+      
 </script>
