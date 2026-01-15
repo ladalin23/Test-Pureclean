@@ -1,24 +1,28 @@
 <template>
-  <v-main class="font-roboto " style="color: #323232 !important;">
-    <!-- Loading Spinner -->
-    <v-container class="pa-0 fill-height align-start">
+  <v-main class="font-roboto" style="color: #323232 !important;">
+    <v-container v-if="Rewards.length > 0 && loyaltyCard.length > 0" class="pa-0 fill-height align-start">
+      
       <v-sheet
         :color="isDark ? '#323232' : '#35667D'"
         height="250"
         width="100%"
-        class=" text-center rounded-b-xl"
+        class="text-center rounded-b-xl"
       >
-        <div class="p-3 mt-[53px] mb-[15px] ">
-          <h2 class="font-medium text-[20px] leading-[30px] tracking-normal">{{ translate("rewards") }}</h2>
+        <div class="p-3 mt-[53px] mb-[15px]">
+          <h2 class="font-medium text-[20px] leading-[30px] tracking-normal">
+            {{ translate("rewards") }}
+          </h2>
         </div>
+        
         <div class="p-4">
           <CardsLoyaltyCard :loyaltyCard="loyaltyCard" />
         </div>
       </v-sheet>
 
       <v-container class="mt-[120px] md:mt-96 pt-10">
-        
-        <h3 class="text-[20px] dark:text-[#FFFFFF] font-medium mb-4">{{translate("reward_history")}}</h3>
+        <h3 class="text-[20px] dark:text-[#FFFFFF] font-medium mb-4">
+          {{ translate("reward_history") }}
+        </h3>
         
         <v-list bg-color="transparent">
           <v-list-item
@@ -28,95 +32,91 @@
           >
             <template v-slot:prepend>
               <v-avatar :color="isDark ? '#323232' : '#F3F4F6'" size="56" class="p-3">
-                      <Icon
-                          name="stamp"
-                          :width="26"
-                          :height="26"
-                          :color="isDark ? '#FFFFFF' : '#7F7F7F'" />
+                <Icon
+                  name="stamp"
+                  :width="26"
+                  :height="26"
+                  :color="isDark ? '#FFFFFF' : '#7F7F7F'" 
+                />
               </v-avatar>
             </template>
 
-            <v-list-item-title class="text-[14px] dark:text-[#FFFFFF] font-medium">{{ item.product.name }}</v-list-item-title>
+            <v-list-item-title class="text-[14px] dark:text-[#FFFFFF] font-medium">
+              {{ item.product.name }}
+            </v-list-item-title>
+            
             <v-list-item-subtitle class="text-[12px] dark:text-[#FFFFFF] font-medium color-[#7F7F7F]">
-              {{ formatDateTime(item.created_at) }}
+              {{ formatDate(item.created_at) }}
             </v-list-item-subtitle>
 
             <template v-slot:append>
-              <v-chip size="small" :color="isDark ? '#323232' :'#FFEDD4'" variant="flat">
-                <span class="text-[#FFB86A] dark:text-[#FFFFFF]" >{{translate("claimed")}}</span> 
+              <v-chip 
+                size="small" 
+                :color="isDark ? '#323232' : '#FFEDD4'" 
+                variant="flat"
+              >
+                <span class="text-[#FFB86A] dark:text-[#FFFFFF]">
+                  {{ translate("claimed") }}
+                </span> 
               </v-chip>
             </template>
           </v-list-item>
         </v-list>
       </v-container>
     </v-container>
+
+    <div v-else class="flex justify-center items-center h-[80vh]">
+      <v-progress-circular 
+        indeterminate 
+        color="primary" 
+        size="70" 
+      />
+    </div>
   </v-main>
 </template>
 
 <script setup lang="ts">
-    import Icon from '@/components/Icons.vue';
-    import { useRewardStore } from '~/store/reward'
-    import { useLoyaltyCardStore } from '~/store/loyalty_card'
-    import { useNuxtApp } from '#app';
-    
-    const nuxtApp = useNuxtApp();
-    const translate = nuxtApp.$translate as (key: string) => string;
+import { computed, onMounted } from 'vue'
+import { useNuxtApp } from '#app'
+import { useColorMode } from '#imports'
 
-    const { $alert } = useNuxtApp();
+// Components & Utilities
+import Icon from '@/components/Icons.vue'
+import { formatDate } from '~/config/pageHelper'
 
-    const rewardStore = useRewardStore()
-    const loyaltyCardStore = useLoyaltyCardStore()
+// Stores
+import { useRewardStore } from '~/store/reward'
+import { useLoyaltyCardStore } from '~/store/loyalty_card'
 
-    const Rewards = computed(() => rewardStore.rewards)
-    const loyaltyCard = computed(() => loyaltyCardStore.loyaltyCard)
+// --- Init Composables ---
+const nuxtApp = useNuxtApp()
+const translate = nuxtApp.$translate as (key: string) => string
+const { $alert } = useNuxtApp()
+const colorMode = useColorMode()
 
-    onMounted(async () => {
-      try {
-        await rewardStore.fetchRewards();
-        
-        await loyaltyCardStore.fetchLoyaltyCards();
-      } catch (e) {
-        const msg = e?.response?.data?.message || e?.message || 'Failed to load news'
-        $alert.error(msg)
-      }
-    })
+const rewardStore = useRewardStore()
+const loyaltyCardStore = useLoyaltyCardStore()
 
-    const formatDateTime = (date) => {
-      const d = new Date(date)
+// --- Computed State ---
+const Rewards = computed(() => rewardStore.rewards)
+const loyaltyCard = computed(() => loyaltyCardStore.loyaltyCard)
 
-      const datePart = new Intl.DateTimeFormat('en-GB', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric',
-      }).format(d)
+// --- Dark Mode ---
+const isDark = computed({
+    get: () => colorMode.value === 'dark', 
+})
 
-      const timePart = new Intl.DateTimeFormat('en-US', {
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true,
-      }).format(d)
-
-      return `${datePart} at ${timePart}`
-    }
-    
-    // / --- Dark Mode ---
-    const colorMode = useColorMode()
-    const isDark = computed({
-        get() {
-            return colorMode.value === 'dark'
-        },
-        set(value) {
-            colorMode.preference = value ? 'dark' : 'light'
-            localStorage.setItem('dark', value ? 'true' : 'false')
-        }
-    })
-
-    onMounted(() => {
-        const saved = localStorage.getItem('dark')
-        if (saved === 'true') {
-            colorMode.preference = 'dark'
-        } else {
-            colorMode.preference = 'light'
-        }
-    })
+// --- Lifecycle ---
+onMounted(async () => {
+  try {
+    // Run both fetches in parallel for better performance
+    await Promise.all([
+      rewardStore.fetchRewards(),
+      loyaltyCardStore.fetchLoyaltyCards()
+    ])
+  } catch (e: any) {
+    const msg = e?.response?.data?.message || e?.message || 'Failed to load data'
+    $alert.error(msg)
+  }
+})
 </script>

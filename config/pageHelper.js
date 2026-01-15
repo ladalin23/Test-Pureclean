@@ -1,32 +1,6 @@
 // utils/pageHelper.js
+import { useNuxtApp } from '#app'
 
-export function getSort(sortBy, fallback = { key: 'created_at', order: 'desc' }) {
-  return Array.isArray(sortBy) && sortBy[0] ? sortBy[0] : fallback
-}
-
-/* ---------- Robust date coercion ---------- */
-function toDate(val) {
-  if (!val && val !== 0) return null
-  if (val instanceof Date) return isNaN(val) ? null : val
-  if (typeof val === 'number') {
-    const ms = val < 1e12 ? val * 1000 : val // allow seconds or ms
-    const d = new Date(ms)
-    return isNaN(d) ? null : d
-  }
-  if (typeof val === 'string') {
-    // Fast path for 'YYYY-MM-DD'
-    const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(val.trim())
-    if (m) {
-      const y = +m[1], mo = +m[2] - 1, d = +m[3]
-      // return a Date in UTC midnight for that calendar day
-      return new Date(Date.UTC(y, mo, d, 0, 0, 0, 0))
-    }
-    // Fallback to Date.parse (handles ISO strings)
-    const d = new Date(val)
-    return isNaN(d) ? null : d
-  }
-  return null
-}
 
 export function formatDate(val) {
   if (!val) return ''
@@ -57,62 +31,18 @@ export function toEndMs(val) {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 23, 59, 59, 999).getTime()
 }
 
-/* ---------- Param builder ---------- */
-export function buildParams({
-  page = 1,
-  itemsPerPage = 10,
-  sortBy = [{ key: 'created_at', order: 'desc' }],
-  search = '',
-  columns = [],
-  dateRange = [],
-  withRels = [],
-  filterBy = {},
-} = {}) {
-  const s = getSort(sortBy)
-  const params = {
-    page,
-    limit: itemsPerPage,
-    sort_by: s.key,
-    sort_dir: s.order,
-  }
 
-  if (withRels?.length) params.with = withRels
-  if (filterBy && Object.keys(filterBy).length) params.filter_by = filterBy
-
-  const txt = String(search || '').trim()
-  if (txt) {
-    params.search = txt
-    if (columns?.length) params.columns = columns
-  }
-
-  // Accept: ['from','to'] OR { start, end } OR { 0: from, 1: to }
-  let from, to
-  if (Array.isArray(dateRange)) {
-    ;[from, to] = dateRange
-  } else if (dateRange && typeof dateRange === 'object') {
-    from = dateRange.start ?? dateRange[0]
-    to   = dateRange.end   ?? dateRange[1]
-  }
-
-  const fromMs = toStartMs(from)
-  const toMs   = toEndMs(to)
-  if (fromMs !== undefined) params.date_from = fromMs
-  if (toMs   !== undefined) params.date_to   = toMs
-
-  return params
+export function getLangText(val) {
+  if (!val) return ''
+  const nuxtApp = useNuxtApp()
+  const lang = nuxtApp.$currentLang
+  const parts = val.split('||')
+  const code = (lang && 'value' in lang ? lang.value : lang) || 'en'
+  return parts[code === 'km' ? 1 : 0] || parts[0]
 }
 
-
-// ~/utils/bilingual.js
-export const DELIM = '||'; // en||km
-
-export const safePart = (s) => (s ?? '').replaceAll(DELIM, ' ').trim();
-
-export const splitBilingual = (val = '') => {
-  if (typeof val !== 'string') return { en: '', km: '' };
-  const [en = '', km = ''] = val.split(DELIM);
-  return { en: en?.trim() ?? '', km: km?.trim() ?? '' };
-};
-
-export const joinBilingual = (en = '', km = '') =>
-  `${safePart(en)}${DELIM}${safePart(km)}`;
+export function getLangParagraphs(val) {
+  const text = getLangText(val)
+  if (!text) return []
+  return text.split(/\n+/) 
+}

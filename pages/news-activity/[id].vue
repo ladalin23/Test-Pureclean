@@ -5,7 +5,7 @@
         <v-icon size="28" class="dark:text-[#FFFFFF]">mdi-chevron-left</v-icon>
       </nuxt-link>
       <v-toolbar-title class="text-[20px] dark:text-[#FFFFFF] font-medium ml-n4 ps-6">
-        {{News.title}}
+        {{getLangText(News.title)}}
       </v-toolbar-title>
     </v-app-bar>
 
@@ -19,7 +19,13 @@
         ></v-img>
 
         <div class="text-body-1 text-[#323232] line-height-lg dark:text-[#FFFFFF] px-2 text-justify">
-          {{News.content}}
+            <p
+              v-for="(para, index) in getLangParagraphs(News.content)"
+              :key="index"
+              class="mb-4"
+            >
+              {{ para }}
+            </p>
         </div>
       </v-container>
     </v-main>
@@ -27,17 +33,12 @@
 </template>
 
 <script setup>
-    
     import { useRoute } from 'vue-router'
     import { useNewsStore } from '~/store/news'
-
-    definePageMeta({
-        layout: 'blank'
-    });
+    import { getLangText, getLangParagraphs } from '~/config/pageHelper'
 
     const route = useRoute()
     const id = route.params.id;
-
     const { $alert } = useNuxtApp();
 
     const newsStore = useNewsStore()
@@ -51,7 +52,7 @@
         await newsStore.fetchNew(id);
         News.value = newsStore.singleNews || []
         if(News.value.length == 0) {
-          const ids = Number(route.params.id)
+          const ids = Number(id)
           News.value = promoImages.find(promo => promo.id == ids) || {}
         }
       } catch (e) {

@@ -31,10 +31,10 @@
           >
             <div class="mb-5">
               <h3 class="text-white text-[1.6rem] font-bold leading-tight">
-                {{ item.title }}
+                {{ getLangText(item.title) }}
               </h3>
               <p class="text-white/90 text-sm mt-1">
-                {{ item.subtitle }}
+                {{ getLangText(item.subtitle) }}
               </p>
             </div>
 
@@ -59,6 +59,7 @@
 <script setup lang="ts">
     import { useRouter } from 'vue-router'
     import { useNuxtApp } from '#app';
+    import { getLangText } from '~/config/pageHelper'
 
     const nuxtApp = useNuxtApp();
     const translate = nuxtApp.$translate as (key: string) => string;
@@ -71,14 +72,14 @@
     const items = [
       {
           slug: 'washing',
-          title: 'Washing Guids',
-          subtitle: 'Simple Steps for Better Laundry Results.',
+          title: 'Washing Guids||ការណែនាំអំពីការបោកគក់',
+          subtitle: 'Simple Steps for Better Laundry Results.||ជំហានសាមញ្ញៗសម្រាប់លទ្ធផលបោកគក់កាន់តែប្រសើរ។',
           image: '/images/NeedHelp/CLothes_in_grass_field.jpg'
       },
       {
           slug: 'drying',
-          title: 'The Right Way to Dry',
-          subtitle: 'Essential Drying Tips for Cleaner Results.',
+          title: 'The Right Way to Dry||វិធីត្រឹមត្រូវដើម្បីសម្ងួត',
+          subtitle: 'Essential Drying Tips for Cleaner Results.||គន្លឹះសំខាន់ៗសម្រាប់សម្ងួតសម្រាប់លទ្ធផលស្អាតជាងមុន។',
           image: '/images/NeedHelp/Natural_drying.jpg'
       }
     ]
