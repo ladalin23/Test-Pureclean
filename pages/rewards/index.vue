@@ -65,7 +65,7 @@
       </v-container>
     </v-container>
 
-    <div v-if="loading" class="w-full absolute top-0 left-0 flex justify-center items-center bg-white h-[100vh]">
+    <div v-if="loading" class="absolute top-0 left-0 w-full flex justify-center items-center bg-white h-[100vh]">
       <v-progress-circular 
         indeterminate 
         color="primary" 
