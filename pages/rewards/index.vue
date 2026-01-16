@@ -1,6 +1,6 @@
 <template>
   <v-main class="font-roboto" style="color: #323232 !important;">
-    <v-container v-if="Rewards.length > 0 && loyaltyCard.length > 0" class="pa-0 fill-height align-start">
+    <v-container class="pa-0 fill-height align-start">
       
       <v-sheet
         :color="isDark ? '#323232' : '#35667D'"
@@ -65,7 +65,7 @@
       </v-container>
     </v-container>
 
-    <div v-else class="flex justify-center items-center h-[80vh]">
+    <div v-if="loading" class="flex justify-center items-center h-[80vh]">
       <v-progress-circular 
         indeterminate 
         color="primary" 
@@ -118,5 +118,14 @@ onMounted(async () => {
     const msg = e?.response?.data?.message || e?.message || 'Failed to load data'
     $alert.error(msg)
   }
+})
+
+// Loading 
+const loading = ref(true)
+
+onMounted(() => {
+  setTimeout(() => {
+    loading.value = false
+  }, 4000) // 4 seconds
 })
 </script>
