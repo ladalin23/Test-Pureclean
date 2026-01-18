@@ -27,7 +27,7 @@
                     >
                     <template v-slot:prepend>
                         <v-avatar color="orange-lighten-5" size="56" class="mr-4">
-                        <v-icon icon="mdi-gift-outline" color="orange-darken-1" size="24"></v-icon>
+                        <v-icon icon="mdi-email-outline" color="orange-darken-1" size="24"></v-icon>
                         </v-avatar>
                     </template>
 
@@ -69,7 +69,7 @@ function dateFormat(dateStr: string) {
   const date = new Date(dateStr)
   const day = date.getDate()
   const month = date.toLocaleString('en-US', { month: 'short' })
-  return `${day} ${month}.`
+  return `${day} ${month}`
 }
 
 // Scroll to newest notification automatically
