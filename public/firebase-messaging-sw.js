@@ -2,12 +2,12 @@ importScripts("https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"
 importScripts("https://www.gstatic.com/firebasejs/9.23.0/firebase-messaging-compat.js")
 
 firebase.initializeApp({
-  apiKey: "AIzaSyAwxJvERe9Z3hIeWMxqcyKKXr98aEU1ngI",
-  authDomain: "test-notification-6b8fc.firebaseapp.com",
-  projectId: "test-notification-6b8fc",
-  storageBucket: "test-notification-6b8fc.firebasestorage.app",
-  messagingSenderId: "832683863762",
-  appId: "1:832683863762:web:9049dd623d20a05733070b",
+  apiKey: "AIzaSyCFXe7ufnjzKFKOU74xssD22VBu6H1ZnuA",
+  authDomain: "pureclean-launtromat.firebaseapp.com",
+  projectId: "pureclean-launtromat",
+  storageBucket: "pureclean-launtromat.firebasestorage.app",
+  messagingSenderId: "514438040302",
+  appId: "1:514438040302:web:e8915681f414f9318241ff",
 })
 
 const messaging = firebase.messaging()

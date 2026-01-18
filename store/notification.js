@@ -22,13 +22,13 @@ export const useNotificationStore = defineStore('notification', () => {
 
   const initFCM = async () => {
     const firebaseConfig = {
-      apiKey: "AIzaSyAwxJvERe9Z3hIeWMxqcyKKXr98aEU1ngI",
-      authDomain: "test-notification-6b8fc.firebaseapp.com",
-      projectId: "test-notification-6b8fc",
-      storageBucket: "test-notification-6b8fc.appspot.com",
-      messagingSenderId: "832683863762",
-      appId: "1:832683863762:web:9049dd623d20a05733070b",
-      measurementId: "G-CKT8HZQLY0",
+      apiKey: "AIzaSyCFXe7ufnjzKFKOU74xssD22VBu6H1ZnuA",
+      authDomain: "pureclean-launtromat.firebaseapp.com",
+      projectId: "pureclean-launtromat",
+      storageBucket: "pureclean-launtromat.firebasestorage.app",
+      messagingSenderId: "514438040302",
+      appId: "1:514438040302:web:e8915681f414f9318241ff",
+      measurementId: "G-HQH1WJCWL1"
     }
     console.log(2)
 
@@ -44,7 +44,7 @@ export const useNotificationStore = defineStore('notification', () => {
 
     try {
       const token = await getToken(messaging, {
-        vapidKey: 'BFdbgMGQgLGsHA2owDJmJsWLyvduXVzVktJGVeXFYVkVlw8GKYutfPTJJiSOsCsaS29fAwLRmVAWaTHK_nboGSc',
+        vapidKey: 'BEe_pLIsLzYqfL6dUqn98cI14aTs8iJs0RQXL_l8mE4etQP55_ja7Y7iT8NXHq9-71jq5hIhUbbpEmY1UWRpsxs',
       })
       if (token) {
         console.log('FCM Token:', token)
