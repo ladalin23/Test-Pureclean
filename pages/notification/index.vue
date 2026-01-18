@@ -1,42 +1,52 @@
 <template>
   <v-app>
-    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important" >
+    <v-main class="bg-lighten-4 font-roboto" style="color: #323232 !important">
       <v-container class="pa-4">
-        <header class="d-flex justify-between mb-7 py-1 align-center ">
-            <nuxt-link to="/" >
-                <v-icon size="28">mdi-chevron-left</v-icon>
-            </nuxt-link>
-            <p class="font-medium text-[20px] leading-[30px] tracking-normal">{{translate("notifications")}}</p>
-            <p></p>
+        <!-- Header -->
+        <header class="d-flex justify-between mb-7 py-1 align-center">
+          <nuxt-link to="/">
+            <v-icon size="28">mdi-chevron-left</v-icon>
+          </nuxt-link>
+          <p class="font-medium text-[20px] leading-[30px] tracking-normal">
+            {{ translate("notifications") }}
+          </p>
+          <p></p>
         </header>
+
+        <!-- Notifications Card -->
         <v-card variant="flat" max-width="500" class="mx-auto">
-            <v-list lines="two">
-                <v-list-item
-                v-for="(item, index) in notifications"
-                :key="index"
-                class="py-4"
-                >
-                <template v-slot:prepend>
-                    <v-avatar color="orange-lighten-5" size="56" class="mr-4">
-                    <v-icon :icon="item.icon" color="orange-darken-1" size="24"></v-icon>
-                    </v-avatar>
-                </template>
+            <div v-if="store.notifications.length === 0" class="text-center py-4">
+                No notifications
+            </div>
+            <div v-else>
+                <v-list lines="two">
+                    <v-list-item
+                    v-for="item in store.notifications"
+                    :key="item.id"
+                    class="py-4"
+                    >
+                    <template v-slot:prepend>
+                        <v-avatar color="orange-lighten-5" size="56" class="mr-4">
+                        <v-icon icon="mdi-gift-outline" color="orange-darken-1" size="24"></v-icon>
+                        </v-avatar>
+                    </template>
 
-                <v-list-item-title class="!text-sm !font-normal">
-                {{ item.title }}
-                </v-list-item-title>
+                    <v-list-item-title class="!text-sm !font-normal">
+                    {{ item.title }}
+                    </v-list-item-title>
 
-                <v-list-item-subtitle class="!text-xs text-[#7F7F7F]">
-                {{ item.subtitle }}
-                </v-list-item-subtitle>
+                    <v-list-item-subtitle class="!text-xs text-[#7F7F7F]">
+                    {{ item.body }}
+                    </v-list-item-subtitle>
 
-                <template v-slot:append>
-                    <div class="align-self-start !text-xs text-[#7F7F7F] mt-1">
-                    {{ item.date }}
-                    </div>
-                </template>
-                </v-list-item>
-            </v-list>
+                    <template v-slot:append>
+                        <div class="align-self-start !text-xs text-[#7F7F7F] mt-1">
+                        {{ dateFormat(item.created_at) }}
+                        </div>
+                    </template>
+                    </v-list-item>
+                </v-list>
+            </div>
         </v-card>
       </v-container>
     </v-main>
@@ -44,23 +54,56 @@
 </template>
 
 <script setup lang="ts">
-    import { useNuxtApp } from '#app';
-    
-    const nuxtApp = useNuxtApp();
-    const translate = nuxtApp.$translate as (key: string) => string;
+import { onMounted, ref, watch, nextTick } from 'vue'
+import { useNuxtApp } from '#app'
+import { useNotificationStore } from '~/store/notification'
 
-    const notifications = [
-        {
-            title: "You've Earned a Reward!",
-            subtitle: "Congrats! You've completed 5 washes.",
-            date: "23 Jul",
-            icon: "mdi-gift-outline",
-        },
-        {
-            title: "Get 20% Off This Weekend!",
-            subtitle: "Save on every wash this Friday to Sunday.",
-            date: "28 Jul",
-            icon: "mdi-tag-outline",
-        },
-    ];
+const nuxtApp = useNuxtApp()
+const translate = nuxtApp.$translate as (key: string) => string
+const store = useNotificationStore()
+
+const notificationCard = ref<HTMLElement | null>(null)
+
+// Format date nicely
+function dateFormat(dateStr: string) {
+  const date = new Date(dateStr)
+  const day = date.getDate()
+  const month = date.toLocaleString('en-US', { month: 'short' })
+  return `${day} ${month}.`
+}
+
+// Scroll to newest notification automatically
+const scrollToBottom = async () => {
+  await nextTick()
+  if (notificationCard.value) {
+    notificationCard.value.scrollTop = notificationCard.value.scrollHeight
+  }
+}
+
+// Watch for new notifications
+watch(
+  () => store.notifications.length,
+  () => {
+    scrollToBottom()
+  }
+)
+
+onMounted(async () => {
+  // Initialize FCM (no backend fetch needed)
+  console.log(1)
+  await store.initFCM()
+})
+
+console.log('Message', store.notifications)
 </script>
+
+<style scoped>
+hr {
+  border: 0;
+  border-top: 1px solid #e0e0e0;
+}
+.v-card {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+</style>

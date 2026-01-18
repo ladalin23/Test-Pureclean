@@ -1,25 +1,18 @@
-// stores/notification.js
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { useNuxtApp } from '#app'
-import { initializeApp } from 'firebase/app'
 import { getMessaging, getToken, onMessage } from 'firebase/messaging'
+import { initializeApp } from 'firebase/app'
 
-export const useNotificationStore = defineStore('notification', () => {
-  const { $AdminPrivateAxios: api } = useNuxtApp()
+export const useNotificationStore = defineStore('notifications', () => {
+  const { $AdminPrivateAxios: api } = useNuxtApp() as any
 
-  const notifications = ref([]) // store incoming notifications
+  // State
+  const notifications = ref([]) // store notifications from FCM or API
+  const loading = ref(false)
   const error = ref(null)
 
-  const addNotification = (notification) => {
-    notifications.value.unshift({
-      id: notification.id || new Date().getTime(),
-      title: notification.title || '',
-      body: notification.body || '',
-      created_at: notification.created_at || new Date().toISOString(),
-    })
-  }
-
+  // Initialize Firebase messaging
   const initFCM = async () => {
     const firebaseConfig = {
       apiKey: "AIzaSyAwxJvERe9Z3hIeWMxqcyKKXr98aEU1ngI",
@@ -30,45 +23,64 @@ export const useNotificationStore = defineStore('notification', () => {
       appId: "1:832683863762:web:9049dd623d20a05733070b",
       measurementId: "G-CKT8HZQLY0",
     }
-    console.log(2)
 
     const app = initializeApp(firebaseConfig)
     const messaging = getMessaging(app)
 
+    // Request permission
     const permission = await Notification.requestPermission()
     if (permission !== 'granted') {
       console.warn('Notification permission denied')
       return
     }
-    console.log(3)
 
     try {
       const token = await getToken(messaging, {
-        vapidKey: 'BFdbgMGQgLGsHA2owDJmJsWLyvduXVzVktJGVeXFYVkVlw8GKYutfPTJJiSOsCsaS29fAwLRmVAWaTHK_nboGSc',
+        vapidKey: '<BFdbgMGQgLGsHA2owDJmJsWLyvduXVzVktJGVeXFYVkVlw8GKYutfPTJJiSOsCsaS29fAwLRmVAWaTHK_nboGSc>', // replace with your Web Push VAPID key
       })
       if (token) {
-        console.log('FCM Token:', token)
+        console.log('FCM Token:', token);
+        // Register token in Laravel
         await api.post('/fcm/register', { token, platform: 'web' })
       }
     } catch (err) {
       console.error('Error getting FCM token:', err)
-      error.value = err
     }
 
+    // Listen for foreground messages
     onMessage(messaging, (payload) => {
+      console.log('FCM Message received:', payload)
       if (payload.notification) {
-        addNotification({
+        notifications.value.unshift({
+          id: new Date().getTime(),
           title: payload.notification.title,
           body: payload.notification.body,
+          created_at: new Date().toISOString(),
         })
       }
     })
   }
 
+  // Fetch notifications from backend API
+  const fetchNotifications = async () => {
+    loading.value = true
+    error.value = null
+    try {
+      const res = await api.get('/notifications')
+      notifications.value = res.data
+    } catch (err) {
+      console.error('Error fetching notifications:', err)
+      error.value = err
+    } finally {
+      loading.value = false
+    }
+  }
+
   return {
     notifications,
+    loading,
     error,
-    addNotification,
     initFCM,
+    fetchNotifications,
   }
 })
