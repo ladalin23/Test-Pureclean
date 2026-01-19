@@ -15,13 +15,13 @@
 
         <!-- Notifications Card -->
         <v-card variant="flat" max-width="500" class="mx-auto">
-            <div v-if="store.notifications.length === 0" class="text-center py-4">
+            <div v-if="notifications.length === 0" class="text-center py-4">
                 No notifications
             </div>
             <div v-else>
                 <v-list lines="two">
                     <v-list-item
-                    v-for="item in store.notifications"
+                    v-for="item in notifications"
                     :key="item.id"
                     class="py-4"
                     >
@@ -60,8 +60,7 @@ import { useNotificationStore } from '~/store/notification'
 
 const nuxtApp = useNuxtApp()
 const translate = nuxtApp.$translate as (key: string) => string
-const store = useNotificationStore()
-
+const notificationStore = useNotificationStore()
 const notificationCard = ref<HTMLElement | null>(null)
 
 // Format date nicely
@@ -71,7 +70,6 @@ function dateFormat(dateStr: string) {
   const month = date.toLocaleString('en-US', { month: 'short' })
   return `${day} ${month}`
 }
-
 // Scroll to newest notification automatically
 const scrollToBottom = async () => {
   await nextTick()
@@ -82,28 +80,19 @@ const scrollToBottom = async () => {
 
 // Watch for new notifications
 watch(
-  () => store.notifications.length,
+  () => notificationStore.notifications.length,
   () => {
     scrollToBottom()
+    notificationStore.markAllAsRead()
   }
 )
 
+const notifications = computed(() => notificationStore.notifications);
+
 onMounted(async () => {
-  // Initialize FCM (no backend fetch needed)
-  console.log(1)
-  await store.initFCM()
+  await notificationStore.initFCM()
+  notificationStore.markAllAsRead()
 })
 
-console.log('Message', store.notifications)
 </script>
 
-<style scoped>
-hr {
-  border: 0;
-  border-top: 1px solid #e0e0e0;
-}
-.v-card {
-  max-height: 70vh;
-  overflow-y: auto;
-}
-</style>

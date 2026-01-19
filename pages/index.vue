@@ -15,9 +15,16 @@
               />
             </div>
             <v-btn to="/notification" icon variant="text">
-              <v-icon size="24" class="md:!text-[36px] sm:!text-[24px] dark:text-[#FFFFFF]">
-                mdi-bell
-              </v-icon>
+              <v-badge  
+                dot 
+                color="green" 
+                offset-x="3" 
+                offset-y="3" 
+                :model-value="newnotificatoin > 0" >
+                <v-icon size="24" class="md:!text-[36px] sm:!text-[24px] dark:text-[#FFFFFF]">
+                  mdi-bell
+                </v-icon>
+              </v-badge>
             </v-btn>
           </header>
 
@@ -147,6 +154,8 @@ import { useBannerStore } from '~/store/banner'
 import { useNewsStore } from '~/store/news'
 import { useLoyaltyCardStore } from '~/store/loyalty_card'
 import { getLangText } from '~/config/pageHelper'
+import { useNotificationStore } from '~/store/notification'
+
 
 // --- Init Services ---
 const router = useRouter()
@@ -161,6 +170,7 @@ const auth = userAuth()
 const bannerStore = useBannerStore()
 const newsStore = useNewsStore()
 const loyaltyCardStore = useLoyaltyCardStore()
+const notificationStore = useNotificationStore()
 
 const { user } = storeToRefs(auth)
 
@@ -169,6 +179,7 @@ const currentUser = computed(() => user.value || null)
 const Banners = computed(() => bannerStore.banners)
 const News = computed(() => newsStore.news)
 const loyaltyCard = computed(() => loyaltyCardStore.loyaltyCard)
+const newnotificatoin = computed(() => notificationStore.unreadCount);
 
 // --- Dark Mode ---
 const isDark = computed({
@@ -187,8 +198,10 @@ onMounted(async () => {
     await Promise.all([
       bannerStore.fetchBanners(),
       newsStore.fetchNews(),
-      loyaltyCardStore.fetchLoyaltyCards()
+      loyaltyCardStore.fetchLoyaltyCards(),
+      notificationStore.initFCM()
     ]);
+
 
     // Fallback Mock Data if API is empty
     if (bannerStore.banners.length === 0) {
