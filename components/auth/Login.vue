@@ -1,6 +1,6 @@
 <!-- components/AuthLogin.vue -->
 <template>
-  <v-card class="login-card" elevation="8">
+  <v-card class="login-card mx-auto" elevation="8">
     <v-card-title class="d-flex text-h6 font-semibold justify-center py-4">
       Welcome back
     </v-card-title>
